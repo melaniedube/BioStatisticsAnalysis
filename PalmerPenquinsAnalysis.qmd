@@ -7,23 +7,204 @@ execute:
   keep-md: true
 ---
 
-## Quarto
+# Palmer Penguins Analysis
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+This is my first notebook, an analysis of the Palmer Penguins data set.
 
-## Running Code
+## Loading Packages and Data sets
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-1 + 1
-```
-
-You can add options to executable code like this
+Here we will load the tidyverse package and penguins data.
 
 ```{r}
-#| echo: false
-2 * 2
+#Load the tidyverse
+library(tidyverse)
+library(kableExtra)
+
+#Read the penguins_samp1 data file from github
+penguins <- read_csv("https://raw.githubusercontent.com/mcduryea/Intro-to-Bioinformatics/main/data/penguins_samp1.csv")
+
+#See the first six rows of the data we've read in to our notebook
+penguins %>% 
+  head() %>% 
+  kable() %>%
+  kable_styling(c("striped", "hover"))
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+## About Our Data
+
+The data we are working with is a data set on penguins, which includes 8 features measured on 44 penguins Included features are physiological (including bill length, bill depth, flipper length, body mass, etc.), as well as other features including the year that the penguin was observed, the island it was observed on, the sex of the penguin, and the species of the penguin.
+
+## Interesting Questions to Ask
+
+-   What is the average flipper length? What about for each species?
+
+-   Are there more male or female penguins? What about per island or species?
+
+-   What is the average body mass? What about by island? By species? By sex?
+
+-   What is the ratio of bill length to bill depth for a penguin? What is the overall average of this metric? Does it change by species, sex, or island?
+
+-   Does average body mass change by year?
+
+## Data Manipulation Tools and Strategies
+
+We can look at individual columns in a data set or subsets of columns in a data set. For example, if we are only interested in flipper length and species, we can `select()` those columns.
+
+```{r}
+penguins %>%
+  select(species, body_mass_g)
+```
+
+If we want to `filter()` and only show certain rows, we can do that too.
+
+```{r}
+#We can filter by sex (categorical variables)
+penguins %>%
+  filter(species == "Chinstrap")
+
+#We can also filter by numerical variables
+penguins %>%
+  filter(body_mass_g >= 6000)
+
+#We can also do both (vertical line means "or")
+penguins %>%
+  filter((body_mass_g >= 6000 ) | (island == "Torgersen"))
+```
+
+## Answering Our Questions
+
+Most of our questions involve summarizing data, and perhaps summarizing over groups. We can summarize data using the `summarize()` function, and group data using `group_by().`
+
+Let's find the average flipper length.
+
+```{r}
+#Overall average flipper length
+penguins %>%
+  summarize(avg_flipper_length = mean(flipper_length_mm))
+
+#Single Species Average
+penguins %>%
+  filter(species == "Gentoo") %>%
+  summarize(avg_flipper_length = mean(flipper_length_mm))
+
+#Grouped Average           
+penguins %>%
+  group_by(species) %>%
+  summarize(avg_flipper_length = mean(flipper_length_mm))
+```
+
+How many of each species do we have?
+
+```{r}
+penguins %>%
+  count(species)
+```
+
+Are there more male or female penguins?
+
+```{r}
+penguins %>%
+  count(sex)
+
+penguins %>%
+  group_by(species) %>%
+  count(sex)
+  
+```
+
+How many penguins were observed on each island? Where can each species be observed?
+
+```{r}
+penguins %>%
+  group_by (island) %>%
+  count (species)
+```
+
+We can use `mutate()` to add new columns to our data set.
+
+```{r}
+#To make a permanent change, we need to store the results of our manipulations
+penguins_with_ratio <- penguins %>%
+  mutate(bill_ltd_ratio = bill_length_mm / bill_depth_mm)
+
+#Average ratio
+penguins %>%
+  mutate(bill_ltd_ratio = bill_length_mm / bill_depth_mm) %>%
+  summarize (mean_bill_ltd_ratio = mean(bill_ltd_ratio),
+             median_bill_ltd_ratio = median(bill_ltd_ratio))
+
+#Average Ratio by Group
+penguins %>%
+  group_by(species) %>%
+  mutate(bill_ltd_ratio = bill_length_mm / bill_depth_mm) %>%
+  summarize (mean_bill_ltd_ratio = mean(bill_ltd_ratio),
+             median_bill_ltd_ratio = median(bill_ltd_ratio))
+
+```
+
+Average body mass by year?
+
+```{r}
+penguins %>%
+  group_by(year) %>%
+  summarize(mean_body_mass = mean(body_mass_g))
+```
+
+## "Rules" for Data Viz
+
+-   One numerical variable - histogram/box plot
+
+-   One categorical variable - barplot
+
+-   Two numerical variables - scatter plot
+
+-   Two categorical variables - barplot with fill
+
+-   One numerical and one categorical variable - side by side box plots, overlaid histograms, "faceting"
+
+## Data Visualization with `ggplot()`
+
+-   What is the distribution of penguin flipper lengths?
+
+-   What is the distribution of penguin species?
+
+-   Does the distribution of flipper length depend on the species of penguin?
+
+-   How many penguins were observed by year?
+
+-   Is there any correlation between bill length and bill depth? (scatter plot)
+
+```{r}
+penguins %>%
+  ggplot() +
+  geom_histogram( aes(x = flipper_length_mm), 
+                  bins = 15,
+                  fill = "lightgreen",
+                  color = "black") +
+  labs(title = "Distribution of Flipper Length (mm)",
+       y = "", x = "Flipper Length (mm)",
+       subtitle = "Mean in Black, Median in Pink") +
+  geom_vline(aes(xintercept = mean(flipper_length_mm)), linewidth = 2, lty = "dashed") +
+  geom_vline(aes(xintercept = median(flipper_length_mm)), color = "pink", linewidth = 2, lty = "dotted")
+
+
+```
+
+We will now look at the distribution of species.
+
+```{r}
+penguins %>%
+  ggplot() +
+  geom_bar(mapping = aes(x = species), fill = "lightblue") +
+  labs(title = "Counts of Penguin Species",
+       x = "Species", y = "Count")
+```
+
+Now lets make a scatter plot to see if bill length is correlated with bill depth.
+
+```{r}
+penguins %>%
+  ggplot() +
+  geom_point(aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_smooth(aes(x = bill_length_mm, y = bill_depth_mm, color = species), method = "lm")
+```
