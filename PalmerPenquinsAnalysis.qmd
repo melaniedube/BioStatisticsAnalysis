@@ -208,3 +208,16 @@ penguins %>%
   geom_point(aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
   geom_smooth(aes(x = bill_length_mm, y = bill_depth_mm, color = species), method = "lm")
 ```
+
+## A Final Question
+
+If you haven\'t done so already, can you determine whether the average bill length for a penguin exceeds 45mm? Are you able to answer only for a subset of penguins or for the entire population? How certain are you with your answer.
+
+```{r}
+penguins %>%
+  summarize(avg_bill_length = mean(bill_length_mm))
+t.test(penguins$bill_length_mm, alternative = "greater", mu = 45, conf.level = 0.95)
+  #Do not do a t test for this scenario in the future under the same conditions
+```
+
+The average bill length is above 45 mm. This is the average for only this population/the given data set.
