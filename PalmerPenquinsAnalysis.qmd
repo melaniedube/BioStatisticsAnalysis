@@ -1,4 +1,6 @@
 ---
+
+---
 title: "Palmer Penguins Initial Analysis"
 author: "Melanie Dube"
 format: html
@@ -93,12 +95,16 @@ penguins %>%
   summarize(avg_flipper_length = mean(flipper_length_mm))
 ```
 
+The table above uses functions of grouping and average to organize each individual and present the average flipper length for each species, based on available data. While this data appears significant, it is important to note how many of each species were measured, because this could skew an average for a specific species.
+
 How many of each species do we have?
 
 ```{r}
 penguins %>%
   count(species)
 ```
+
+The table above separates each of the individual penguins by species to indicate how many of each there are. This data pairs well with the above table, as it allows us to see the number of each species and connect that with the averages calculated above, to help determine the significance/accuracy of each average compared to the whole population.
 
 Are there more male or female penguins?
 
@@ -112,6 +118,8 @@ penguins %>%
   
 ```
 
+The above table separates each of species into male and female individuals.
+
 How many penguins were observed on each island? Where can each species be observed?
 
 ```{r}
@@ -119,6 +127,8 @@ penguins %>%
   group_by (island) %>%
   count (species)
 ```
+
+This graph is significant because it breaks down where each individual was studied. It is overwhelmingly clear here that the majority of the studied penguins were Gentoo species on the island Biscoe. This is important data to know because it could skew other data points, so knowing that most of the individuals all were located in one place could be significant.
 
 We can use `mutate()` to add new columns to our data set.
 
@@ -142,6 +152,8 @@ penguins %>%
 
 ```
 
+Using the mutate function allows for different calculated values to be integrated into the raw data table. This can help make the data more useful for those trying to interpret it.
+
 Average body mass by year?
 
 ```{r}
@@ -149,6 +161,8 @@ penguins %>%
   group_by(year) %>%
   summarize(mean_body_mass = mean(body_mass_g))
 ```
+
+This is interesting data as well, because it could indicate climate patterns or availability of food or shelter for the penguins in a given year. As with other calculated values, it is obviously important to have an understanding of other metrics (species, location, etc.) in order to have an accurate understanding of whether these values are representative of the entire group.
 
 ## "Rules" for Data Viz
 
@@ -190,6 +204,8 @@ penguins %>%
 
 ```
 
+This diagram breaks down each of the flipper lengths from smallest to largest. This gives a visual representation of the distribution of the data. The mean and median of the data are also represented with lines, which also describe the data set.
+
 We will now look at the distribution of species.
 
 ```{r}
@@ -200,6 +216,8 @@ penguins %>%
        x = "Species", y = "Count")
 ```
 
+This bar graph gives a simple visual for the distribution of each species within the entire data set.
+
 Now lets make a scatter plot to see if bill length is correlated with bill depth.
 
 ```{r}
@@ -209,9 +227,11 @@ penguins %>%
   geom_smooth(aes(x = bill_length_mm, y = bill_depth_mm, color = species), method = "lm")
 ```
 
+This scatter plot indicates a point for each piece of data, and a line of best fit to represent the trends for each species. Based on this data set, there does appear to be a correlation between bill length and bill depth.
+
 ## A Final Question
 
-If you haven\'t done so already, can you determine whether the average bill length for a penguin exceeds 45mm? Are you able to answer only for a subset of penguins or for the entire population? How certain are you with your answer.
+If you haven't done so already, can you determine whether the average bill length for a penguin exceeds 45mm? Are you able to answer only for a subset of penguins or for the entire population? How certain are you with your answer.
 
 ```{r}
 penguins %>%
@@ -220,4 +240,4 @@ t.test(penguins$bill_length_mm, alternative = "greater", mu = 45, conf.level = 0
   #Do not do a t test for this scenario in the future under the same conditions
 ```
 
-The average bill length is above 45 mm. This is the average for only this population/the given data set.
+The average bill length is above 45 mm. This is the average for only this population/the given data set. However, use of a confidence interval and hypothesis test can help us determine if we can use our given data to make predictions which could be applicable to an entire population.

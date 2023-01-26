@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Melanie Dube">
 
-<title>Palmer Penguins Initial Analysis</title>
+<title>palmerpenquinsanalysis</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -110,29 +109,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Palmer Penguins Initial Analysis</h1>
-</div>
 
 
-
-<div class="quarto-title-meta">
-
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Melanie Dube </p>
-          </div>
-  </div>
-    
-  
-    
-  </div>
-  
-
-</header>
-
+<hr>
+<hr>
+<p>title: “Palmer Penguins Initial Analysis” author: “Melanie Dube” format: html editor: visual execute: keep-md: true</p>
+<hr>
 <section id="palmer-penguins-analysis" class="level1">
 <h1>Palmer Penguins Analysis</h1>
 <p>This is my first notebook, an analysis of the Palmer Penguins data set.</p>
@@ -376,6 +358,7 @@ dbl (5): bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g, year
 3 Gentoo                  218.</code></pre>
 </div>
 </div>
+<p>The table above uses functions of grouping and average to organize each individual and present the average flipper length for each species, based on available data. While this data appears significant, it is important to note how many of each species were measured, because this could skew an average for a specific species.</p>
 <p>How many of each species do we have?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">%&gt;%</span></span>
@@ -389,6 +372,7 @@ dbl (5): bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g, year
 3 Gentoo       33</code></pre>
 </div>
 </div>
+<p>The table above separates each of the individual penguins by species to indicate how many of each there are. This data pairs well with the above table, as it allows us to see the number of each species and connect that with the averages calculated above, to help determine the significance/accuracy of each average compared to the whole population.</p>
 <p>Are there more male or female penguins?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">%&gt;%</span></span>
@@ -416,6 +400,7 @@ dbl (5): bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g, year
 6 Gentoo    male      20</code></pre>
 </div>
 </div>
+<p>The above table separates each of species into male and female individuals.</p>
 <p>How many penguins were observed on each island? Where can each species be observed?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">%&gt;%</span></span>
@@ -433,6 +418,7 @@ dbl (5): bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g, year
 5 Torgersen Adelie        5</code></pre>
 </div>
 </div>
+<p>This graph is significant because it breaks down where each individual was studied. It is overwhelmingly clear here that the majority of the studied penguins were Gentoo species on the island Biscoe. This is important data to know because it could skew other data points, so knowing that most of the individuals all were located in one place could be significant.</p>
 <p>We can use <code>mutate()</code> to add new columns to our data set.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#To make a permanent change, we need to store the results of our manipulations</span></span>
@@ -465,6 +451,7 @@ dbl (5): bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g, year
 3 Gentoo                   3.17                  3.13</code></pre>
 </div>
 </div>
+<p>Using the mutate function allows for different calculated values to be integrated into the raw data table. This can help make the data more useful for those trying to interpret it.</p>
 <p>Average body mass by year?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">%&gt;%</span></span>
@@ -479,6 +466,7 @@ dbl (5): bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g, year
 3  2009          4518.</code></pre>
 </div>
 </div>
+<p>This is interesting data as well, because it could indicate climate patterns or availability of food or shelter for the penguins in a given year. As with other calculated values, it is obviously important to have an understanding of other metrics (species, location, etc.) in order to have an accurate understanding of whether these values are representative of the entire group.</p>
 </section>
 <section id="rules-for-data-viz" class="level2">
 <h2 class="anchored" data-anchor-id="rules-for-data-viz">“Rules” for Data Viz</h2>
@@ -515,6 +503,7 @@ dbl (5): bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g, year
 <p><img src="PalmerPenquinsAnalysis_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>This diagram breaks down each of the flipper lengths from smallest to largest. This gives a visual representation of the distribution of the data. The mean and median of the data are also represented with lines, which also describe the data set.</p>
 <p>We will now look at the distribution of species.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">%&gt;%</span></span>
@@ -526,6 +515,7 @@ dbl (5): bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g, year
 <p><img src="PalmerPenquinsAnalysis_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>This bar graph gives a simple visual for the distribution of each species within the entire data set.</p>
 <p>Now lets make a scatter plot to see if bill length is correlated with bill depth.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">%&gt;%</span></span>
@@ -546,6 +536,37 @@ dbl (5): bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g, year
 <p><img src="PalmerPenquinsAnalysis_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>This scatter plot indicates a point for each piece of data, and a line of best fit to represent the trends for each species. Based on this data set, there does appear to be a correlation between bill length and bill depth.</p>
+</section>
+<section id="a-final-question" class="level2">
+<h2 class="anchored" data-anchor-id="a-final-question">A Final Question</h2>
+<p>If you haven’t done so already, can you determine whether the average bill length for a penguin exceeds 45mm? Are you able to answer only for a subset of penguins or for the entire population? How certain are you with your answer.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">%&gt;%</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">avg_bill_length =</span> <span class="fu">mean</span>(bill_length_mm))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  avg_bill_length
+            &lt;dbl&gt;
+1            46.4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(penguins<span class="sc">$</span>bill_length_mm, <span class="at">alternative =</span> <span class="st">"greater"</span>, <span class="at">mu =</span> <span class="dv">45</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  penguins$bill_length_mm
+t = 1.8438, df = 43, p-value = 0.03606
+alternative hypothesis: true mean is greater than 45
+95 percent confidence interval:
+ 45.12094      Inf
+sample estimates:
+mean of x 
+ 46.37045 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Do not do a t test for this scenario in the future under the same conditions</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The average bill length is above 45 mm. This is the average for only this population/the given data set. However, use of a confidence interval and hypothesis test can help us determine if we can use our given data to make predictions which could be applicable to an entire population.</p>
 </section>
 </section>
 
