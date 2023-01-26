@@ -1,0 +1,54 @@
+---
+title: "VolcanicEruptionsAnalysis"
+author: "Melanie Dube"
+format: html
+editor: visual
+execute: 
+  keep-md: true
+---
+
+# Volcanic Eruptions Analysis
+
+This notebook will look into data from a 238 volcanic eruptions from over the course of 2,500 years.
+
+## Reading the Data into Notebook
+
+Always begin a new set of r with the library(tidyverse) code, as well and the data packages, which are pasted below.
+
+Begin each new session by running the tidyverse and the package of interest.
+
+```{r}
+library(tidyverse)
+install.packages("skimr")
+library(skimr)
+
+volcano <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/volcano.csv')
+eruptions <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/eruptions.csv')
+events <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/events.csv')
+tree_rings <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/tree_rings.csv')
+sulfur <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/sulfur.csv')
+
+```
+
+```{r}
+#install.packages("tidymodels")
+library(tidymodels)
+
+my_data_splits <- initial_split(eruptions, prop = 0.5)
+
+exploratory_data <- training(my_data_splits)
+test_data <- testing(my_data_splits)
+```
+
+We have specified eruptions (in the initial_split function), so that is the data which will be available. By changing this to one of the other five available data sets in the initial load, we can view different data.
+
+By running exploratory_data, the table below is generated.
+
+```{r}
+exploratory_data
+```
+
+```{r}
+exploratory %>%
+  
+```
