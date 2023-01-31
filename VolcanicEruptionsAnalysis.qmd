@@ -48,7 +48,70 @@ By running exploratory_data, the table below is generated.
 exploratory_data
 ```
 
+## Interesting Questions to Ask
+
+-   What is the name of the volcano with the largest number of eruptions?
+
+-   What percent of the total eruptions were confirmed vs. unconfirmed?
+
+-   What are all different evidence methods and how many times were each of them used?
+
+-   Are volcanic eruptions more likely to happen in one area of the globe?
+
+## Data Exploration
+
 ```{r}
-exploratory %>%
-  
+exploratory_data %>%
+  skim(evidence_method_dating, data_name = NULL)
+```
+
+This uses the skim function to summarize data, by skimming the "evidence_method_dating" column we can see that there are 5589 rows, which should correspond to 5589 individual tracked eruptions. There are 15 columns, which could correspond to 15 different methods of evidence dating. This function does not show each of the names of the data collection methods.
+
+```{r}
+exploratory_data %>%
+  count(eruption_category)
+```
+
+This function shows us how many of each eruption category are tracked in this data set. There appear to be 4,964 confirmed eruptions, 80 discredited eruptions, and 545 uncertain eruptions. This could be useful data because in determining answers to questions about actual eruptions, it may be necessary to only look at the 4,964 eruptions which were confirmed.
+
+```{r}
+exploratory_data %>%
+  count(volcano_number)
+
+exploratory_data %>%
+  count(volcano_number) %>%
+  arrange(-n)
+```
+
+This counts the eruptions per individual volcano. By using the arrange function, we are able to change the way that the data is presented and organize it in descending order, so that the volcano with the most eruptions is listed first. This shows us that volcano number 211060 has erupted the most times (124). Because this is so much more than any of the others, it can be considered an out liar and could be worth investigating more.
+
+```{r}
+exploratory_data %>%
+  group_by(volcano_name) %>%
+  count(eruption_category) %>%
+  arrange(-n)
+
+
+```
+
+By running the code above we are able to see which volcanoes have the highest number of confirmed eruptions. It is evident that Etna has 98 confirmed eruptions, but there are at least 10 other volcanoes which have more than 50 confirmed eruptions.
+
+```{r}
+#install.packages("leaflet")
+#install.packages("ggmap")
+library(ggmap)
+?ggmap
+world <- map_data("world")
+
+ggplot(world, aes(x=long, y=lat, group=group)) +
+  geom_path() 
++
+  geom_point(data = exploratory_data,
+             aes(x = longitude, y = latitude), color ="red")
+
+library(leaflet)
+exploratory_data
+leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(lng = exploratory_data$longitude, lat = exploratory_data$latitude, radius = 0.5)
 ```
