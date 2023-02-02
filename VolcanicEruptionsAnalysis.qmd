@@ -19,7 +19,7 @@ Begin each new session by running the tidyverse and the package of interest.
 
 ```{r}
 library(tidyverse)
-install.packages("skimr")
+#install.packages("skimr")
 library(skimr)
 
 volcano <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/volcano.csv')
@@ -94,24 +94,45 @@ exploratory_data %>%
 
 ```
 
-By running the code above we are able to see which volcanoes have the highest number of confirmed eruptions. It is evident that Etna has 98 confirmed eruptions, but there are at least 10 other volcanoes which have more than 50 confirmed eruptions.
+By running the code above we are able to see which volcanoes have the highest number of confirmed eruptions. It is evident that Etna has 100 confirmed eruptions, but there are at least 10 other volcanoes which have more than 50 confirmed eruptions.
 
 ```{r}
 #install.packages("leaflet")
 #install.packages("ggmap")
-library(ggmap)
-?ggmap
-world <- map_data("world")
-
-ggplot(world, aes(x=long, y=lat, group=group)) +
-  geom_path() 
-+
-  geom_point(data = exploratory_data,
-             aes(x = longitude, y = latitude), color ="red")
 
 library(leaflet)
-exploratory_data
+confirmed <- exploratory_data %>%
+  filter(eruption_category == "Confirmed Eruption")
 leaflet() %>%
-  addTiles() %>%
-  addCircleMarkers(lng = exploratory_data$longitude, lat = exploratory_data$latitude, radius = 0.5)
+  addProviderTiles(providers$OpenTopoMap) %>%
+  addCircleMarkers(lng = confirmed$longitude, lat = confirmed$latitude, radius = 0.5)
+```
+
+```{r}
+top10erupted <- exploratory_data %>%
+  group_by(volcano_name, latitude, longitude) %>%
+  count(eruption_category) %>%
+  arrange(-n) %>%
+  head(10)
+leaflet() %>%
+  addProviderTiles(providers$OpenTopoMap) %>%
+  addCircleMarkers(lng = top10erupted$longitude, lat = top10erupted$latitude, radius = top10erupted$n/10)
+```
+
+## Hypotheses
+
+-   I hypothesize that volcanoes with the highest number of confirmed eruptions do not all exist in one region of the world.
+
+-   I hypothesize that the most common method of evidence dating is Historical Observations.
+
+## Proving Hypotheses
+
+-   The first hypothesis can be proved with the code block above. Using ggplot, we are able to place the ten volcanoes with the highest recorded amounts of confirmed eruptions on a topographic map. We are able to see that the volcanoes are located across the map, not just in one region. Of the top ten, there are none existing in North America. There appear to be three of the top ten located in the far eastern Asia/Japan region, and another in the Indonesia. Based on this data we may be able to make inferences about where some of the most active volcanoes in the world are located.
+
+-   The second hypothesis is examined in the code block below. It is evident that of the 20 different methods of evidence dating, historical observation is the most commonly used. However, it is worth noting that Radiocarbon and Tephrochronology were used a significant number of times as well, accounting for a total of 1436 out of 4964 total confirmed eruptions, or 29%. Additionally, 626 out of 496 confirmed eruptions (13%) have an unknown method, which could also be noted for significance.
+
+```{r}
+exploratory_data %>%
+  count(evidence_method_dating) %>%
+  arrange(-n)
 ```
