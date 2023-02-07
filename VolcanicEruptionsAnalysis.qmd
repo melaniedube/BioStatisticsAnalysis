@@ -9,7 +9,13 @@ execute:
 
 # Volcanic Eruptions Analysis
 
-This notebook will look into data from a 238 volcanic eruptions from over the course of 2,500 years.
+## Abstract
+
+This notebook examines data from a number of volcanic eruptions over the course of 2,500 years. There are a number of questions which can be generated from this data, including which volcano has the most eruptions, what region of the world has the most active volcanoes, what was the longest confirmed eruption, etc..
+
+## Introduction
+
+There are 5,589 total volcanoes which were have been added to this data set thus far. The observed volcanoes are located across the world, spanning all seven continents. There are a variety of classifications which volcanoes can fall into, including active, dormant, and extinct. The exploratory function for this set allows access to many different categories of data. The name and identification numbers (including eruption number and volcano number) for each volcano are listed, as well as eruption category. Additional data about the start and end dates of each eruption, and physical location of the volcano are also tracked in the data table.
 
 ## Reading the Data into Notebook
 
