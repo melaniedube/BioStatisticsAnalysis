@@ -17,7 +17,7 @@ This notebook examines data from a number of volcanic eruptions over the course 
 
 There are 5,589 total volcanoes which were have been added to this data set thus far. The observed volcanoes are located across the world, spanning all seven continents. There are a variety of classifications which volcanoes can fall into, including active, dormant, and extinct. The exploratory function for this set allows access to many different categories of data. The name and identification numbers (including eruption number and volcano number) for each volcano are listed, as well as eruption category. Additional data about the start and end dates of each eruption, and physical location of the volcano are also tracked in the data table.
 
-## Reading the Data into Notebook
+### Reading the Data into Notebook
 
 Always begin a new set of r with the library(tidyverse) code, as well and the data packages, which are pasted below.
 
@@ -54,7 +54,7 @@ By running exploratory_data, the table below is generated.
 exploratory_data
 ```
 
-## Interesting Questions to Ask
+### Interesting Questions to Ask
 
 -   What is the name of the volcano with the largest number of eruptions?
 
@@ -125,13 +125,13 @@ leaflet() %>%
   addCircleMarkers(lng = top10erupted$longitude, lat = top10erupted$latitude, radius = top10erupted$n/10)
 ```
 
-## Hypotheses
+### Hypotheses
 
 -   I hypothesize that volcanoes with the highest number of confirmed eruptions do not all exist in one region of the world.
 
 -   I hypothesize that the most common method of evidence dating is Historical Observations.
 
-## Proving Hypotheses
+### Proving Hypotheses
 
 -   The first hypothesis can be proved with the code block above. Using ggplot, we are able to place the ten volcanoes with the highest recorded amounts of confirmed eruptions on a topographic map. We are able to see that the volcanoes are located across the map, not just in one region. Of the top ten, there are none existing in North America. There appear to be three of the top ten located in the far eastern Asia/Japan region, and another in the Indonesia. Based on this data we may be able to make inferences about where some of the most active volcanoes in the world are located.
 
@@ -141,4 +141,12 @@ leaflet() %>%
 exploratory_data %>%
   count(evidence_method_dating) %>%
   arrange(-n)
+```
+
+## Inference/Methodology
+
+In the inference section of this data analysis, a new set of data is used. Instead of using exploratory data, the below section shows the test data, which is completely separate from any data used previously.
+
+```{r}
+test_data
 ```
