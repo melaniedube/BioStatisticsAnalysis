@@ -150,3 +150,29 @@ In the inference section of this data analysis, a new set of data is used. Inste
 ```{r}
 test_data
 ```
+
+#### Combining Columns
+
+```{r}
+test_data<-test_data %>%
+  mutate(east_west = ifelse(longitude>=0, "east", "west")) %>%
+  mutate(north_south = ifelse(latitude>=0, "north", "south"))
+
+
+test_data<-test_data %>%
+  unite(col=region, c('north_south','east_west'), sep = "-" )
+```
+
+The block above takes data for latitude and longitude and combines them to determine the region of the world where the volcano is located. The mutate function helps determine whether the volcano is north/south or east/west, and the unite function takes created columns for these two variables and combines them into one called "region", where each volcano can be categorized into one of four different regions, north-east, north-west, south-east, or south-west.
+
+#### Eruptions per Region
+
+```{r}
+library(ggplot2)
+
+test_data%>%
+  ggplot(aes(x=region, y=volcano_number)) +
+  geom_bar(stat="identity")
+```
+
+The plot above shows each of the regions of the world and the corresponding volcanoes which have been studied in each region. Using this plot we are able to see that the south-west appears to be the least "active" region in terms of volcanic eruptions, while the north eastern region is the most active. In general, there appear to be significantly more eruptions in the north compared to the south.
