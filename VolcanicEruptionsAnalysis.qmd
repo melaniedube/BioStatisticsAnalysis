@@ -188,12 +188,17 @@ chisq <- chisq.test(dating_counts, p = dating_probs)
 chisq
 ```
 
-This test method allows to determine the likelihood of one dating method to be used compared to all others. The null hypothesis we have created is that all evidence method dating types are equally likely. Therefore, the alternative hypothesis would be that all the evidence method dating types are not equally likely. Through a chi-square goodness of fit test, we can compare the observed distribution to an expected distribution. Running this test with the data calculated an extremely small p value (2.2e-16), which leads us to believe that the alternative hypothesis is correct and not all methods are equally likely to be used.
+This testing method allows to determine the likelihood of one dating method to be used compared to all others. The null hypothesis we have created is that all evidence method dating types are equally likely. Therefore, the alternative hypothesis would be that all the evidence method dating types are not equally likely. Through a chi-square goodness of fit test, we can compare the observed distribution to an expected distribution. Running this test with the data calculated an extremely small p value (2.2e-16), which leads us to believe that the alternative hypothesis is correct and not all methods are equally likely to be used.
 
 ```{r}
 test_data %>%
-  ggplot(aes(x = evidence_method_dating, y = volcano_number)) +
-  geom_bar(stat = "identity")
+  ggplot(aes(x = fct_reorder(evidence_method_dating,volcano_number), y = volcano_number)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(x = "")
+  
                 
 
 ```
+
+This chart gives a visual for the test performed above, which confirms the alternative hypothesis. Based on the size of the bars, not all methods of testing have equal chances of being used in this test data set.
