@@ -1,0 +1,44 @@
+---
+title: "Final Biostatistics Analysis"
+output: html_notebook
+---
+
+# Biostatistics Analysis 2: Australian Fires
+
+## Step 1: Loading the tidyverse
+
+```{r}
+#Load the tidyverse
+library(tidyverse)
+library(kableExtra)
+#install.packages("tidymodels")
+library(tidymodels)
+#install.packages("skimr")
+library(skimr)
+```
+
+## Step 2: Loading the packages
+
+The data set I chose for this analysis is on Australia, specifically about it's climate and recent fires. One of the goals of compiling this data is to spread awareness of these fires, and there is an
+
+```{r}
+# Get the Data
+
+rainfall <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-07/rainfall.csv')
+temperature <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-07/temperature.csv')
+
+library(skimr)
+rainfall%>%
+  skim()
+
+library(skimr)
+temperature%>%
+  skim()
+
+rainfall %>%
+  head() %>%
+  kable() %>%
+  kable_styling(c("hover", "striped"))
+```
+
+Above I have loaded the data from the tidytuesday page, which has two data sets (temperature and rainfall).
