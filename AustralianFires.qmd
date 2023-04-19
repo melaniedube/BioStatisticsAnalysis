@@ -5,7 +5,27 @@ output: html_notebook
 
 # Biostatistics Analysis 2: Australian Fires
 
-## Step 1: Loading the tidyverse
+## Abstract
+
+This notebook examines data on temperature and rainfall in Australia, as well as data on a number of fires around the country. There are a number of questions which can be generated from this data, including how rainfall compares to temperature, what region of the country has the most fires, and how temperature correlates to chance of fire.
+
+## Introduction
+
+The climate has been rather unstable around the world in recent years, and seems to be changing at a rapid rate. Climate change is often associated with or attributed to altered weather patterns (including abnormal storms and temperatures), and rising sea levels. Lack of rainfall and higher temperatures are often a prime environment for an uncontrollable fire, which can cause irreversible damage to the flora and fauna in a region.
+
+### Questions to Consider
+
+-   How does rainfall compare to temperature?
+
+-   Does higher temperature correlate with higher chance of fires?
+
+-   Are the fires concentrated to one region of the country?
+
+-   Which region/city has the highest temperatures?
+
+-   Where is the most rain falling in the region, on average?
+
+### Loading the packages
 
 ```{r}
 #Load the tidyverse
@@ -15,17 +35,40 @@ library(kableExtra)
 library(tidymodels)
 #install.packages("skimr")
 library(skimr)
+
+install.packages("sf")
 ```
 
-## Step 2: Loading the packages
+### Loading the data
 
-The data set I chose for this analysis is on Australia, specifically about it's climate and recent fires. One of the goals of compiling this data is to spread awareness of these fires, and there is an
+One of the primary goals of compiling this data set is to spread awareness of these fires. There are many sources which report climate data on the region, which include the temperature and rainfall statistics.
 
 ```{r}
 # Get the Data
 
+# Get the Data
+
 rainfall <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-07/rainfall.csv')
 temperature <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-07/temperature.csv')
+
+# IF YOU USE THIS DATA PLEASE BE CAUTIOUS WITH INTERPRETATION
+nasa_fire <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-07/MODIS_C6_Australia_and_New_Zealand_7d.csv')
+
+# For JSON File of fires
+url <- "http://www.rfs.nsw.gov.au/feeds/majorIncidents.json"
+
+aus_fires <- sf::st_read(url)
+
+
+```
+
+Above I have loaded the data from the tidytuesday page, which has two data sets (temperature and rainfall).
+
+## Exploratory Analysis
+
+To begin analyzing the data, we want to skim it. The skim function allows for grouping of similar data elements for more organized analysis. First, I want to look at specifics from the `temperature` data frame.
+
+```{r}
 
 library(skimr)
 rainfall%>%
@@ -35,10 +78,56 @@ library(skimr)
 temperature%>%
   skim()
 
-rainfall %>%
+temperature %>%
   head() %>%
   kable() %>%
   kable_styling(c("hover", "striped"))
 ```
 
-Above I have loaded the data from the tidytuesday page, which has two data sets (temperature and rainfall).
+One of the first things I was interested in was highest temperature. One thing that I noted about the data set `temperature` is that it is extremely large. When viewing all of the data in that set, there appears to be 528,278 entries, sorted into five columns.
+
+```{r}
+temperature %>%
+  count(temperature) %>%
+  arrange(-n)
+```
+
+This command counts the number of times each temperature appears in the data set. It appears that the most common numeric temperature is 15.8 degrees C, which appears 3,005 times. At least 220 specific (xx.x) temperatures also are counted over 1,000 times, proving how large this data set really is.
+
+```{r}
+temperature %>%
+  group_by(site_name) %>%
+  count(site_name) %>%
+  arrange(-n)
+```
+
+The command above allows us to sort the locations by order of most frequent entries. Interestingly, the top five locations all have around the same number of entries (between 79,924 - 79,926). It also appears that most of, if not all, of the locations are airports. Based on this I assume that the temperature at each of the airports is being recorded around the same time for all locations.
+
+\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~\~
+
+Now, I wanted to look at data regarding specific locations. To do this, I switched to the `rainfall` data frame, which has latitudes and longitudes for each location. I needed to install and load the `mapview` library first.
+
+```{r}
+install.packages("mapview")
+
+library(mapview)
+```
+
+```{r}
+mapview(rainfall, xcol = "long", ycol = "lat", crs = 4326, grid = TRUE)
+```
+
+This command organizes each of the latitudes and longitudes and plots them on a map. This way, we are able to visualize where each of the locations are in the country.
+
+```{r}
+rainfall %>%
+  group_by(year) %>%
+  count(year)
+  
+```
+
+This shows that data has been collected for the last 163 years, with the most recent year appearing to be 2017. What is interesting about this data is that the earlier years have 365 observations exactly, which may indicate that only one location was being tracked every day. For the most current years, there are over 2,000 entries per year which could correlate to the each of the different locations being measured per year.
+
+## Conclusions
+
+This is a complex data set with many different variables to analyze and consider. Despite the data being called "Australian Fires", the data I analyzed was more focused on measuring temperature than the actual fires, which was too large of a data set to download. If I had more time and experience, this would be an interesting analysis to continue.

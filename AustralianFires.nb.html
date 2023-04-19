@@ -1978,31 +1978,116 @@ display: none;
 <!-- rnb-text-begin -->
 <div id="biostatistics-analysis-2-australian-fires" class="section level1">
 <h1>Biostatistics Analysis 2: Australian Fires</h1>
-<div id="step-1-loading-the-tidyverse" class="section level2">
-<h2>Step 1: Loading the tidyverse</h2>
+<div id="abstract" class="section level2">
+<h2>Abstract</h2>
+<p>This notebook examines data on temperature and rainfall in Australia,
+as well as data on a number of fires around the country. There are a
+number of questions which can be generated from this data, including how
+rainfall compares to temperature, what region of the country has the
+most fires, and how temperature correlates to chance of fire.</p>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The climate has been rather unstable around the world in recent
+years, and seems to be changing at a rapid rate. Climate change is often
+associated with or attributed to altered weather patterns (including
+abnormal storms and temperatures), and rising sea levels. Lack of
+rainfall and higher temperatures are often a prime environment for an
+uncontrollable fire, which can cause irreversible damage to the flora
+and fauna in a region.</p>
+<div id="questions-to-consider" class="section level3">
+<h3>Questions to Consider</h3>
+<ul>
+<li><p>How does rainfall compare to temperature?</p></li>
+<li><p>Does higher temperature correlate with higher chance of
+fires?</p></li>
+<li><p>Are the fires concentrated to one region of the country?</p></li>
+<li><p>Which region/city has the highest temperatures?</p></li>
+<li><p>Where is the most rain falling in the region, on
+average?</p></li>
+</ul>
+</div>
+<div id="loading-the-packages" class="section level3">
+<h3>Loading the packages</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI0xvYWQgdGhlIHRpZHl2ZXJzZVxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGthYmxlRXh0cmEpXG4jaW5zdGFsbC5wYWNrYWdlcyhcInRpZHltb2RlbHNcIilcbmxpYnJhcnkodGlkeW1vZGVscylcbiNpbnN0YWxsLnBhY2thZ2VzKFwic2tpbXJcIilcbmxpYnJhcnkoc2tpbXIpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI0xvYWQgdGhlIHRpZHl2ZXJzZVxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
 <pre class="r"><code>#Load the tidyverse
-library(tidyverse)
-library(kableExtra)
-#install.packages(&quot;tidymodels&quot;)
-library(tidymodels)
-#install.packages(&quot;skimr&quot;)
-library(skimr)</code></pre>
+library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMy4yIOKUgOKUgOKclCBnZ3Bsb3QyIDMuNC4wICAgICAg4pyUIHB1cnJyICAgMS4wLjAgXG7inJQgdGliYmxlICAzLjEuOCAgICAgIOKclCBkcGx5ciAgIDEuMC4xMFxu4pyUIHRpZHlyICAgMS4yLjEgICAgICDinJQgc3RyaW5nciAxLjUuMCBcbuKclCByZWFkciAgIDIuMS4zICAgICAg4pyUIGZvcmNhdHMgMC41LjIg4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIGRwbHlyOjpmaWx0ZXIoKSBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliBkcGx5cjo6bGFnKCkgICAgbWFza3Mgc3RhdHM6OmxhZygpXG4ifQ== -->
+<pre><code>── Attaching packages ────────────────────────────────────────────────── tidyverse 1.3.2 ──✔ ggplot2 3.4.0      ✔ purrr   1.0.0 
+✔ tibble  3.1.8      ✔ dplyr   1.0.10
+✔ tidyr   1.2.1      ✔ stringr 1.5.0 
+✔ readr   2.1.3      ✔ forcats 0.5.2 ── Conflicts ───────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShrYWJsZUV4dHJhKVxuYGBgIn0= -->
+<pre class="r"><code>library(kableExtra)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYa2FibGVFeHRyYeKAmVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmRwbHly4oCZOlxuXG4gICAgZ3JvdXBfcm93c1xuIn0= -->
+<pre><code>
+Attaching package: ‘kableExtra’
+
+The following object is masked from ‘package:dplyr’:
+
+    group_rows</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2luc3RhbGwucGFja2FnZXMoXCJ0aWR5bW9kZWxzXCIpXG5saWJyYXJ5KHRpZHltb2RlbHMpXG5gYGAifQ== -->
+<pre class="r"><code>#install.packages(&quot;tidymodels&quot;)
+library(tidymodels)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeW1vZGVscyAxLjAuMCDilIDilIBcbuKclCBicm9vbSAgICAgICAgMS4wLjIgICAgIOKclCByc2FtcGxlICAgICAgMS4xLjFcbuKclCBkaWFscyAgICAgICAgMS4xLjAgICAgIOKclCB0dW5lICAgICAgICAgMS4wLjFcbuKclCBpbmZlciAgICAgICAgMS4wLjQgICAgIOKclCB3b3JrZmxvd3MgICAgMS4xLjJcbuKclCBtb2RlbGRhdGEgICAgMS4xLjAgICAgIOKclCB3b3JrZmxvd3NldHMgMS4wLjBcbuKclCBwYXJzbmlwICAgICAgMS4wLjMgICAgIOKclCB5YXJkc3RpY2sgICAgMS4xLjBcbuKclCByZWNpcGVzICAgICAgMS4wLjQgICAgIFxu4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeW1vZGVsc19jb25mbGljdHMoKSDilIDilIBcbuKcliBzY2FsZXM6OmRpc2NhcmQoKSAgICAgICAgbWFza3MgcHVycnI6OmRpc2NhcmQoKVxu4pyWIGRwbHlyOjpmaWx0ZXIoKSAgICAgICAgICBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliByZWNpcGVzOjpmaXhlZCgpICAgICAgICAgbWFza3Mgc3RyaW5ncjo6Zml4ZWQoKVxu4pyWIGthYmxlRXh0cmE6Omdyb3VwX3Jvd3MoKSBtYXNrcyBkcGx5cjo6Z3JvdXBfcm93cygpXG7inJYgZHBseXI6OmxhZygpICAgICAgICAgICAgIG1hc2tzIHN0YXRzOjpsYWcoKVxu4pyWIHlhcmRzdGljazo6c3BlYygpICAgICAgICBtYXNrcyByZWFkcjo6c3BlYygpXG7inJYgcmVjaXBlczo6c3RlcCgpICAgICAgICAgIG1hc2tzIHN0YXRzOjpzdGVwKClcbuKAoiBVc2UgdGlkeW1vZGVsc19wcmVmZXIoKSB0byByZXNvbHZlIGNvbW1vbiBjb25mbGljdHMuXG4ifQ== -->
+<pre><code>── Attaching packages ───────────────────────────────────────────────── tidymodels 1.0.0 ──
+✔ broom        1.0.2     ✔ rsample      1.1.1
+✔ dials        1.1.0     ✔ tune         1.0.1
+✔ infer        1.0.4     ✔ workflows    1.1.2
+✔ modeldata    1.1.0     ✔ workflowsets 1.0.0
+✔ parsnip      1.0.3     ✔ yardstick    1.1.0
+✔ recipes      1.0.4     
+── Conflicts ──────────────────────────────────────────────────── tidymodels_conflicts() ──
+✖ scales::discard()        masks purrr::discard()
+✖ dplyr::filter()          masks stats::filter()
+✖ recipes::fixed()         masks stringr::fixed()
+✖ kableExtra::group_rows() masks dplyr::group_rows()
+✖ dplyr::lag()             masks stats::lag()
+✖ yardstick::spec()        masks readr::spec()
+✖ recipes::step()          masks stats::step()
+• Use tidymodels_prefer() to resolve common conflicts.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2luc3RhbGwucGFja2FnZXMoXCJza2ltclwiKVxubGlicmFyeShza2ltcilcblxuaW5zdGFsbC5wYWNrYWdlcyhcInNmXCIpXG5gYGAifQ== -->
+<pre class="r"><code>#install.packages(&quot;skimr&quot;)
+library(skimr)
+
+install.packages(&quot;sf&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoidHJ5aW5nIFVSTCAnaHR0cHM6Ly9jcmFuLnJzdHVkaW8uY29tL2Jpbi9tYWNvc3gvYmlnLXN1ci1hcm02NC9jb250cmliLzQuMi9zZl8xLjAtMTIudGd6J1xuQ29udGVudCB0eXBlICdhcHBsaWNhdGlvbi94LWd6aXAnIGxlbmd0aCA5MDAyMzgwNiBieXRlcyAoODUuOSBNQilcbj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09XG5kb3dubG9hZGVkIDg1LjkgTUJcbiJ9 -->
+<pre><code>trying URL &#39;https://cran.rstudio.com/bin/macosx/big-sur-arm64/contrib/4.2/sf_1.0-12.tgz&#39;
+Content type &#39;application/x-gzip&#39; length 90023806 bytes (85.9 MB)
+==================================================
+downloaded 85.9 MB</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5UaGUgZG93bmxvYWRlZCBiaW5hcnkgcGFja2FnZXMgYXJlIGluXG5cdC92YXIvZm9sZGVycy84Ny9iMmtsanJ3ZDRiZDZweXNtbnMwd3htZjQwMDAwZ24vVC8vUnRtcERBQnJOVi9kb3dubG9hZGVkX3BhY2thZ2VzXG4ifQ== -->
+<pre><code>
+The downloaded binary packages are in
+    /var/folders/87/b2kljrwd4bd6pysmns0wxmf40000gn/T//RtmpDABrNV/downloaded_packages</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="step-2-loading-the-packages" class="section level2">
-<h2>Step 2: Loading the packages</h2>
-<p>The data set I chose for this analysis is on Australia, specifically
-about it’s climate and recent fires. One of the goals of compiling this
-data is to spread awareness of these fires, and there is an</p>
+<div id="loading-the-data" class="section level3">
+<h3>Loading the data</h3>
+<p>One of the primary goals of compiling this data set is to spread
+awareness of these fires. There are many sources which report climate
+data on the region, which include the temperature and rainfall
+statistics.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBHZXQgdGhlIERhdGFcblxucmFpbmZhbGwgPC0gcmVhZHI6OnJlYWRfY3N2KCdodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vcmZvcmRhdGFzY2llbmNlL3RpZHl0dWVzZGF5L21hc3Rlci9kYXRhLzIwMjAvMjAyMC0wMS0wNy9yYWluZmFsbC5jc3YnKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBHZXQgdGhlIERhdGFcblxuIyBHZXQgdGhlIERhdGFcblxucmFpbmZhbGwgPC0gcmVhZHI6OnJlYWRfY3N2KCdodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vcmZvcmRhdGFzY2llbmNlL3RpZHl0dWVzZGF5L21hc3Rlci9kYXRhLzIwMjAvMjAyMC0wMS0wNy9yYWluZmFsbC5jc3YnKVxuYGBgIn0= -->
 <pre class="r"><code># Get the Data
+
+# Get the Data
 
 rainfall &lt;- readr::read_csv(&#39;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-07/rainfall.csv&#39;)</code></pre>
 <!-- rnb-source-end -->
@@ -2026,8 +2111,51 @@ date (1): date
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShza2ltcilcbnJhaW5mYWxsJT4lXG4gIHNraW0oKVxuYGBgIn0= -->
-<pre class="r"><code>library(skimr)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBJRiBZT1UgVVNFIFRISVMgREFUQSBQTEVBU0UgQkUgQ0FVVElPVVMgV0lUSCBJTlRFUlBSRVRBVElPTlxubmFzYV9maXJlIDwtIHJlYWRyOjpyZWFkX2NzdignaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3Jmb3JkYXRhc2NpZW5jZS90aWR5dHVlc2RheS9tYXN0ZXIvZGF0YS8yMDIwLzIwMjAtMDEtMDcvTU9ESVNfQzZfQXVzdHJhbGlhX2FuZF9OZXdfWmVhbGFuZF83ZC5jc3YnKVxuYGBgIn0= -->
+<pre class="r"><code># IF YOU USE THIS DATA PLEASE BE CAUTIOUS WITH INTERPRETATION
+nasa_fire &lt;- readr::read_csv(&#39;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-07/MODIS_C6_Australia_and_New_Zealand_7d.csv&#39;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogMzQyNzAgQ29sdW1uczogMTPilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5EZWxpbWl0ZXI6IFwiLFwiXG5jaHIgICg0KTogYWNxX3RpbWUsIHNhdGVsbGl0ZSwgdmVyc2lvbiwgZGF5bmlnaHRcbmRibCAgKDgpOiBsYXRpdHVkZSwgbG9uZ2l0dWRlLCBicmlnaHRuZXNzLCBzY2FuLCB0cmFjaywgY29uZmlkZW5jZSwgYnJpZ2h0X3QzMSwgZnJwXG5kYXRlICgxKTogYWNxX2RhdGVcbuKEuSBVc2UgYHNwZWMoKWAgdG8gcmV0cmlldmUgdGhlIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb24gZm9yIHRoaXMgZGF0YS5cbuKEuSBTcGVjaWZ5IHRoZSBjb2x1bW4gdHlwZXMgb3Igc2V0IGBzaG93X2NvbF90eXBlcyA9IEZBTFNFYCB0byBxdWlldCB0aGlzIG1lc3NhZ2UuXG4ifQ== -->
+<pre><code>Rows: 34270 Columns: 13── Column specification ───────────────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr  (4): acq_time, satellite, version, daynight
+dbl  (8): latitude, longitude, brightness, scan, track, confidence, bright_t31, frp
+date (1): acq_date
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGb3IgSlNPTiBGaWxlIG9mIGZpcmVzXG51cmwgPC0gXCJodHRwOi8vd3d3LnJmcy5uc3cuZ292LmF1L2ZlZWRzL21ham9ySW5jaWRlbnRzLmpzb25cIlxuXG5hdXNfZmlyZXMgPC0gc2Y6OnN0X3JlYWQodXJsKVxuYGBgIn0= -->
+<pre class="r"><code># For JSON File of fires
+url &lt;- &quot;http://www.rfs.nsw.gov.au/feeds/majorIncidents.json&quot;
+
+aus_fires &lt;- sf::st_read(url)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVhZGluZyBsYXllciBgbWFqb3JJbmNpZGVudHMnIGZyb20gZGF0YSBzb3VyY2UgXG4gIGBodHRwOi8vd3d3LnJmcy5uc3cuZ292LmF1L2ZlZWRzL21ham9ySW5jaWRlbnRzLmpzb24nIHVzaW5nIGRyaXZlciBgR2VvSlNPTidcblNpbXBsZSBmZWF0dXJlIGNvbGxlY3Rpb24gd2l0aCA0MyBmZWF0dXJlcyBhbmQgNyBmaWVsZHNcbkdlb21ldHJ5IHR5cGU6IEdFT01FVFJZXG5EaW1lbnNpb246ICAgICBYWVxuQm91bmRpbmcgYm94OiAgeG1pbjogMTQyLjQyMjEgeW1pbjogLTM3LjEwNDgxIHhtYXg6IDE1My4xNzUyIHltYXg6IC0yOC43ODEyXG5HZW9kZXRpYyBDUlM6ICBXR1MgODRcbiJ9 -->
+<pre><code>Reading layer `majorIncidents&#39; from data source 
+  `http://www.rfs.nsw.gov.au/feeds/majorIncidents.json&#39; using driver `GeoJSON&#39;
+Simple feature collection with 43 features and 7 fields
+Geometry type: GEOMETRY
+Dimension:     XY
+Bounding box:  xmin: 142.4221 ymin: -37.10481 xmax: 153.1752 ymax: -28.7812
+Geodetic CRS:  WGS 84</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Above I have loaded the data from the tidytuesday page, which has two
+data sets (temperature and rainfall).</p>
+</div>
+</div>
+<div id="exploratory-analysis" class="section level2">
+<h2>Exploratory Analysis</h2>
+<p>To begin analyzing the data, we want to skim it. The skim function
+allows for grouping of similar data elements for more organized
+analysis. First, I want to look at specifics from the
+<code>temperature</code> data frame.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5saWJyYXJ5KHNraW1yKVxucmFpbmZhbGwlPiVcbiAgc2tpbSgpXG5gYGAifQ== -->
+<pre class="r"><code>
+library(skimr)
 rainfall%&gt;%
   skim()</code></pre>
 <!-- rnb-source-end -->
@@ -2044,14 +2172,14 @@ Column type frequency:
 ________________________             
 Group variables            None      </code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbIm9uZV9za2ltX2RmIiwidGJsX2RmIiwidGJsIiwiZGF0YS5mcmFtZSJdLCJucm93Ijo2LCJuY29sIjo4LCJzdW1tYXJ5Ijp7IkEgdGliYmxlIjpbIjYgw5cgOCJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUE2MVVUVy9VTUJCMXZuZER0MVRxaFJzU0YwNGJsYUlLYmx4UUphNElwTjVTYitKdXJFM3MxSFpvOTlaZnc2L2c5M0NyeElFVGh5NTIxcE9tWGlvNEVHbmk4Zmg1N0huemtvL3Z6MTZuWnlsQ0tFQ2g3Nk1nMGk2S1BuODZuYjlGT3FJbkhnclIxSXpYR25Tb25ZbTJBMjJ4WGRpVENpdktXVjd3a3RqWXRLQnFuVFBjUUNCcU9GT1ZuUVFsWGxzM3VleHdyYkZ1cm40clFyUCtuSjFuL3RNNisyYjkzWS90NU5IeDlqdi8rc3g3Q2ZOUlhtT21aTithWitzYnIwK2Q5UmVQMzJzbmYyTEhQVzNQYlk3azcvc2ZFQjhaTGlUYWtqNnh3WmxjMFNiL2dnWEZpM3BnbmVVTmxaS3lKYUFLM3JRMVVTUVhXQUVxYUNnYlhId05wNUNtSGRvd1lYbkg2R1VIVzlLcmlpb2lXMXdRNTNKVHdhOHl1S0NweXIvUnI4MW04OHNGbGxqaFhLTUI2Q0gvMjRjL2dncGUzNE1RZXVLQWt2SUM1SEV3Q2dmbjJibURqRXVWcjhqYUZHQ2lON3ZjeGt2QnV4YklkVmRuQ3l4SmJwaHVpQUNRLzQ5a082a2dTOTVKVXVvc2gxWU5KbVgwbnpyelFDRmhRekJrODJVSlhuc0VKN1RISjRON2NoOTlBOUd3ZlhVRTRiQ2lVbTFMOGpjdUVVV0ZCUzRVRWRBZzF1bEthYUhkTzdmQnZXelZ1blc3TjByaXFMK29zWlFPT2pVNnlTN0VWZ1h1SVFsdnpUOUVXcFlqWjdNbm5NRFRqaGs5bGZPaTZ0aHFmZ3g2c1FZNmpFZit4T0VDT2hnVHRxUnMrT25WZUVGcU85blgydTgvbEt3VmxDbW94SHdSbWVJS0F5NDE4cmVSdmpaMDl4dXRjK1NmcGdVQUFBPT0ifQ== -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbIm9uZV9za2ltX2RmIiwidGJsX2RmIiwidGJsIiwiZGF0YS5mcmFtZSJdLCJucm93Ijo2LCJuY29sIjo4LCJzdW1tYXJ5Ijp7IkEgdGliYmxlIjpbIjYgw5cgOCJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUE2MVVUVy9VTUJCMXZuZER0MVRxaFJzU0YwNGJGYW9LYmx4UUphNElwTjVTYitKdXJFMGMxM1pvOTlaZnc2L2c5M0NyeElFVGh5NTIxcE9tWGlvNEVHbmk4Zmg1N0huemtvL3Z6NDdUc3hRaEZLRFE5MUVRYVJkRm56K2R6dDhpSGRFVEQ0Vm9hc1pyRFRyVXprVGJnYmJZTHV4SmhSVnRXVjYwSmJHeGFVSFZPbWU0Z1VEVXRFeFZkaEtVZUczZDVMTER0Y2E2dWZxdENNMzZjM2FlK1UvcjdKdjFkeisyazBmSDIrL3QxMmZlUzVpUDhob3pKZnZXUEZ2ZmVIM3FyTDk0L0Y0NytSTTc3bWw3Ym5Na2Y5Ly9nUGpJY0NIUmx2U0pEYzdraWpiNUZ5d29YdFFENnl4dnFKU1VMUUZWdEEydmlTSzV3QXBRUVVQWjRPSnJPSVUwZkdqRGhPVWRvNWNkYkVtdktxcUk1TGdnenVXbW9yM0s0SUttS3Y5R3Z6YWJ6UzhYV0dLRmM0MEdvSWY4YngvK0NDcmEraDZFMEJNSGxKUVhJSStEVVRnNHo4NGRaRnlxZkVYV3BnQVR2ZG5sTmw2S3R1TkFycnM2VzJCSmNzTjBRd1NBL0g4azIwa0ZXZkpPa2xKbk9iUnFNQ21qLzlTWkJ3b0pHNElobXk5TDhQZ1JuTUJmbnd6dXlYMzBEVVJEL3VvSXdtRkZwZHFXNUc5Y0lvb0tDMXdvSXFCQnJOT1Ywa0s3ZDI2RGU5bXFOWGU3TjByaXFMK29zWlFPT2pVNnlTN0VWZ1h1SVVuTHpUOUVXcFlqWjdNbm5NRFRqaGs5bGZPaTZ0aHFmZ3g2c1FZNmpFZit4T0VDT2hnVHRxUnMrT25WZUVGcU85blgydTgvbEl3THloUlVZcjZJVExVS0F5NDE4cmVSdmpaMDl4dVBVYnI4cGdVQUFBPT0ifQ== -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["skim_variable"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n_missing"],"name":[2],"type":["int"],"align":["right"]},{"label":["complete_rate"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["min"],"name":[4],"type":["int"],"align":["right"]},{"label":["max"],"name":[5],"type":["int"],"align":["right"]},{"label":["empty"],"name":[6],"type":["int"],"align":["right"]},{"label":["n_unique"],"name":[7],"type":["int"],"align":["right"]},{"label":["whitespace"],"name":[8],"type":["int"],"align":["right"]}],"data":[{"1":"station_code","2":"0","3":"1.0000000","4":"6","5":"6","6":"0","7":"7","8":"0","_rn_":"1"},{"1":"city_name","2":"0","3":"1.0000000","4":"5","5":"9","6":"0","7":"6","8":"0","_rn_":"2"},{"1":"month","2":"0","3":"1.0000000","4":"2","5":"2","6":"0","7":"12","8":"0","_rn_":"3"},{"1":"day","2":"0","3":"1.0000000","4":"2","5":"2","6":"0","7":"31","8":"0","_rn_":"4"},{"1":"quality","2":"11764","3":"0.9343794","4":"1","5":"1","6":"0","7":"2","8":"0","_rn_":"5"},{"1":"station_name","2":"0","3":"1.0000000","4":"8","5":"34","6":"0","7":"7","8":"0","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10],"total":[8]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-frame-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbIm9uZV9za2ltX2RmIiwidGJsX2RmIiwidGJsIiwiZGF0YS5mcmFtZSJdLCJucm93Ijo1LCJuY29sIjoxMSwic3VtbWFyeSI6eyJBIHRpYmJsZSI6WyI1IMOXIDExIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQTdXVjcydlRRQmpIMHpSZDE0NzlnQTMyUXNHcE1BUnBOemZHaENHTjRnOFVmREUzWVM4RzJUVzlybUg1WlhMWjFzMFhzekluTW5BZ1ZGU2NpckJYUTN6cEMxOFU5eDhvWllndjNQcGk0S1pTaFBsR1diMUxjNG1OQTMzamtUYlBmZStUSjVkN3ZwZGNPVHZTR3gySk1nd1RaRGlXWllJaEhES2hxOFBuWXljWnJPQk9nT0dZQ0RsUFk2Z1ZCdzM0MTBJb1o0RExRbUE0Y2IwQkpEVU5aTm5wMStuUWtMU1Uwd3ZLQU5HTFpFMGR4K2RHTzVIZFltVW1VRkFZcnpXUnNVUzUya2w4MlZyV3kwdVBFdXZjNHREWU04UFZ5N1U4di95eXVMWTZkSUFQZGoyTlhENStORkdlbkxsM1o0Y3I4SVcxdXAvdkJCNTgvdERTMGQ3cjh1ZFdWeTRkbWQva080ckZoZmJpKzhUYis0dXpLREhNaHc5ZVY3cTJCL25PZ2RzZk8xYzNYUDV4UGZON28vY3ZuTmsrcFQ5ZmovS2ozKzZPSHR0ZDgrYlR2VDkvMm5xRHdlODhHT29semVNMzl1ZjVyMjB6bXhkZThNbVZOR2t1LzRTdmNwOGVrUGJRNVJPNzFmekpyVmVETy9PSFBIN0pIdWRSMXViNWZvY2ZJTm5iWm5ueHNLMjdSV2JtU0wyYVMvbGNLWC9UUG02VjhndWV2RkRLMzNDUHY4bzVleVJueTdrYXVZcFdjOWNZTDZRQ0Jack9mQm9jc2RHY2tCUmhFaGdTU01yUUVTT3FvRWltS1dGbk9aU29LYm9NRVJRTWdDakZLUkNvVHN5YTFKdXMzazFkcXZmMHVXR2ZwL1pUbGROUGRGT1p5MGdtOGswNFltaFRjVHBwWW5CMkR2OVZLcFVmZmpBRkVCQXdUY0VBdzc2K3VDOGthcklIMlh1d0JncW4wZ0s1bzdOS1ZBNk94Y2Q4WkYwS0NSTXdpeU95NndOemR2RnJpWEZEczNTNjRQN1J4aVF3b1VCV1g0RUdoZGgvTElBdkZjMGlXQ1pNNFN5dGRxcmF0MHRRa1ZRM0JOUFVFMURSVVphK2RGVEJVcVZyRmkxd2RDb2pJV2pxUUtUclVmK2ZTODlXL0FzaFpvQUJSQVRwaXpHc1d2aEpKUkdIZS80QzIxWkdXZDFmUGUrYTJ2MGd5c0EwZld5VXVDU2VOcW9lOE44aXJPbEkwbFRUV2VPUTcrS0E0Uk9hTFpXNEtSVVRNNVk2RWV1aGJuRisxSVdoUHgzcHJnU3RYeDFVeHlXVmxpWWtneVNrSDRjbTdIeDdtOFIxUTFMcGx5Rks5a01jYVFoUUxrck03eWoyc3pGN3Z3QmhiSlQ0dUFZQUFBPT0ifQ== -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbIm9uZV9za2ltX2RmIiwidGJsX2RmIiwidGJsIiwiZGF0YS5mcmFtZSJdLCJucm93Ijo1LCJuY29sIjoxMSwic3VtbWFyeSI6eyJBIHRpYmJsZSI6WyI1IMOXIDExIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQTdXVnoydlRZQmpIMHpSZDE0N053UVk3S0RnVmhpRHRwbVZNR05Jby9rREJ3OXlFSFFiWjIvVHRHcGE4aWZteHJadUhXWmtUR1RnUUtpcE9SZGhwaUVjUEhvcjdENVF5eElOYkR3TTNsU0xNaTdMNnZtbmV4TWFCWG54Sm0rZjl2cDg4ZWZNKzN6ZTVjblk0RVIyT01nd1RaRGlXWllJaEhES2hxMFBuWXljWnJPQk9nT0dZQ0RsUFlhZ05CMDM0MTBvb1o0RExRYUE3Y2FNT0pKUUJzdXowR3pTb1MycmE2UVZsWU5LTFpCV040WE96bmNodXNRb1RLQ3FNMTFySVdMSlM2eVMvYkM1cGxjVkh5VFZ1WVhEMG1lN3FsWHFlWDNwWldsMFozTThIdTU5R0xoODdrcXhNVE4rN3M4MFYrZUpxdzg5M0FnOCtmMmp0N0VpNC9MbVY1VXVINXpiNHpsSnB2cVAwUHZuMi9zS01tUnppd3dldUs5MWJBM3hYLysyUFhTdnJMdis0a2ZtOTBmc1h6MnlkMHA2dlJmbVJiM2RIanU2c2V2UHAyWnMvYmIzQjRIY2VEQ1pJOC9qMXZYbithL3YweG9VWGZHbzVRNXJMUCtGcjNLY0hwRDEwK2VST0xYOXE4OVhBOXR4QmoxKzB4M2t6Wi9OOG44UDNrK3p0TTd4NHlOYmRJak96cEY3N3lvVjh1WERUUG02VkMvT2VQRjh1M0hDUHY4cDVleVJ2eS9rNnVZYldjdGNaTDRTQUFnMW5QazJPMkd5TVM0b3dBWFFKcEdUb2lCRWtLSkpoU05oWkRpV3FpaVpERXdvNk1DbkZLUkFnSjJZTjZrMVc2NkV1MVU3MHVtR3ZwL1pSbGRPTzkxQ1p5MHFHNlp0d1JGY240M1RTeE9Ec0xQNnJWcXMvL0dBYW1FREFOQVVERFB2NjRwNlFxTW9lWk8vQk9paWN6Z2pranM0cVVUazRHaC8xa1ExcFV4aUhPUnlSWFIrWXRZdGZUNHpwcXFYUkJmZVBOcWVBQVFXeStnclVLY1QrWXdGOHFXZ1d3VEpnR21kcHMxUFZ2MTJDaW9UY0VFeFJUMEJGTTNQMHBZTUVDMG5YTEZyZzZHUldNcUdoQVpHdVIrTi9MajFiOVMrRW1BVTZFRTFJWDR4aFpPRW5sVVFjN3ZvTGJGdlp6R24rNm5uWDFPOEhVUWFHNFdPanhDWHhqRjd6Z1A4V1lWVXpKUlVaemhxSGZCY0hkSit3ejBMRVRlbVltTFhRZUN4QjNlTDhxQXREZnpyU1hRbGF2d2FJeGlSRVN4T1NRUXJTajBNTGRyNjlUZUthTGlINlpZaVMvUkEzVlJOUUxrck03eWoyc3pHN3Z3QkRUc3FidUFZQUFBPT0ifQ== -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["skim_variable"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n_missing"],"name":[2],"type":["int"],"align":["right"]},{"label":["complete_rate"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["mean"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["sd"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["p0"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["p25"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["p50"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["p75"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["p100"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["hist"],"name":[11],"type":["chr"],"align":["left"]}],"data":[{"1":"year","2":"0","3":"1.0000000","4":"1964.208754","5":"43.3488248","6":"1858.00","7":"1932.00","8":"1976.00","9":"2000.00","10":"2020.00","11":"▂▃▃▆▇","_rn_":"1"},{"1":"rainfall","2":"11760","3":"0.9344017","4":"2.398254","5":"8.4176447","6":"0.00","7":"0.00","8":"0.00","9":"0.80","10":"327.60","11":"▇▁▁▁▁","_rn_":"2"},{"1":"period","2":"114797","3":"0.3596526","4":"1.028925","5":"0.2904998","6":"1.00","7":"1.00","8":"1.00","9":"1.00","10":"23.00","11":"▇▁▁▁▁","_rn_":"3"},{"1":"lat","2":"0","3":"1.0000000","4":"-33.505952","5":"2.8889092","6":"-37.83","7":"-34.92","8":"-33.86","9":"-31.96","10":"-27.48","11":"▂▇▂▁▂","_rn_":"4"},{"1":"long","2":"0","3":"1.0000000","4":"143.401741","5":"11.1162786","6":"115.79","7":"138.60","8":"149.20","9":"151.21","10":"153.05","11":"▂▁▁▆▇","_rn_":"5"}],"options":{"columns":{"min":{},"max":[10],"total":[11]},"rows":{"min":[10],"max":[10],"total":[5]},"pages":{}}}
@@ -2077,29 +2205,29 @@ Column type frequency:
 ________________________             
 Group variables            None      </code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbIm9uZV9za2ltX2RmIiwidGJsX2RmIiwidGJsIiwiZGF0YS5mcmFtZSJdLCJucm93IjozLCJuY29sIjo4LCJzdW1tYXJ5Ijp7IkEgdGliYmxlIjpbIjMgw5cgOCJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUE2MVRTMjdiTUJDbDliRWxBVTRNWk5WRFdNZ0hRYnJySnVnQmloYklqcUVseGlZc1VReEpOZkV1cCtnNWU0SEdKU1dPTEROcDBVVUZVRE44ZWpQaUROOTh1YjI3eXU0eWhGQ0lvaUJBWVd4Y0ZILzcrbm41RVJuRWJDWW9RcW0xejRaMFpwekVyRVVmMFgxSUM2WjNtSk9hQXFCcExiRGVpUUZRVE5PZWdkQzhDejErVGl6MjZXZS84ZTBvSm5JMkhXR3BzeC8ra0J1d21WbUJzKy93am1xTjdWbVZxek54NEZ4dFdZMi9FOG5JcWhwSzQ3aG1TakcrQmxiUjFLS2lwbDVKTkxEQ212SEJKYy93RjlNbXZYT2JoT09XczhjV1FyS25qV21hRXFTZzN1RlMyVHpsY0VCYlNmQmlYdnY5L3BkUExJa20yTENCT0VISjZZOTNTVVZUSFVqbVpCNXBWajdBOVMxR2NIaWYzM3ZNYWFueGx1NXNBUlo5ZWR2YjZWbzJyWURtK2wvbks2SW90cDJ1cVFSUzhJL045bEpCRnR3cVdwb3NaKzdXRjEyRi8rZG11bVRSWDVOTmExb3l3dDlrTzFaWFZOT0JFNmdTUEhFT0NjWGw5ZUJlSDlBYlFDTnhjUTV3dEdGSzkrMEk5c2dmMXcyUnBOQlVBdm4ySU5RWmIwM0hXR0hjVjE4b25meTdxVDVXd1NpaE4wVkZSWlR5MkpuVlcvNGdlelg1UDVrMVFyT0dLM2Ric1JjOGtSNXcybktyeTNKWmJGcStYVjZDN3R3Q1BZY2pQL0g2QWtxWVVyNW1IQm9SVjJSRks3YzVNVFBVRFZ3dUpPTWFLckdUbGV0R0UrQmxkb3djMHRXR1huOERGWk16MzJFRkFBQT0ifQ== -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbIm9uZV9za2ltX2RmIiwidGJsX2RmIiwidGJsIiwiZGF0YS5mcmFtZSJdLCJucm93IjozLCJuY29sIjo4LCJzdW1tYXJ5Ijp7IkEgdGliYmxlIjpbIjMgw5cgOCJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUE2MVRTMjdiTUJDbDliRWxBVTRNWk5WRFdNZ0hRYnJySnVnQmloYklqcUVseGlZc1VReEpOZkV1cCtnNWU0SEdKU1dPTEROcDBVVUZVRE44ZWpQaUROOTh1YjI3eXU0eWhGQ0lvaUJBWVd4Y0ZILzcrbm41RVJuRWJDWW9RcW0xejRaMFpwekVyRVVmMFgxSUM2WjNtSk9hQXFCcExiRGVpUUZRVE5PZWdkQzhDejErVGl6MjZXZS84ZTBvSm5JMkhXR3BzeC8ra0J1d21WbUJzKy93am1xTjdWbVZxek54NEZ4dFdZMi9FOG5JcWhwSzQ3aG1TakcrQmxiUjFLS2lwbDVKTkxEQ212SEJKYy93RjlNbXZYT2JoT09XczhjV1FyS25qV21hRXFTZzN1RlMyVHpsY0VCYlNmQmlYdnY5L3BkUExJa20yTENCT0VISjZZOTNTVVZUSFVqbVpCNXBWajdBOVMxR2NIaWYzM3ZNYWFueGx1NXNBUlo5ZWR2YjZWbzJyWURtK2wvbks2SW90cDJ1cVFSUzhJL045bEpCRnR3cVdwb3NaKzdXRjEyRi8rZG11bVRSWDVOTmExb3l3dDlrTzFaWFZOT0JFNmdTUEhFT0NjWGw5ZUJlSDlBYlFDTnhjUTV3dEdGSzkrMEk5c2dmMXcyUnBOQlVBdm4ySU5RWmIwM0hXR0hjVjE4b25meTdxVDVXd1NpaE4wVkZSWlR5MkpuVlcvNGdlelg1UDVrMVFyT0dLM2Ric1JjOGtSNXcybktyeTNKWmJGcStYVjZCN3R3Q1BZY2pQL0g2QWtxWVVyNW1IQm9SVjJSRks3YzVNVFBVRFZ3dUpPTWFLckdUbGV0R0UrQmxkb3djMHRXR1huOERON0Z0dkdFRkFBQT0ifQ== -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["skim_variable"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n_missing"],"name":[2],"type":["int"],"align":["right"]},{"label":["complete_rate"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["min"],"name":[4],"type":["int"],"align":["right"]},{"label":["max"],"name":[5],"type":["int"],"align":["right"]},{"label":["empty"],"name":[6],"type":["int"],"align":["right"]},{"label":["n_unique"],"name":[7],"type":["int"],"align":["right"]},{"label":["whitespace"],"name":[8],"type":["int"],"align":["right"]}],"data":[{"1":"city_name","2":"0","3":"1","4":"4","5":"9","6":"0","7":"7","8":"0","_rn_":"1"},{"1":"temp_type","2":"0","3":"1","4":"3","5":"3","6":"0","7":"2","8":"0","_rn_":"2"},{"1":"site_name","2":"0","3":"1","4":"9","5":"25","6":"0","7":"7","8":"0","_rn_":"3"}],"options":{"columns":{"min":{},"max":[10],"total":[8]},"rows":{"min":[10],"max":[10],"total":[3]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-frame-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbIm9uZV9za2ltX2RmIiwidGJsX2RmIiwidGJsIiwiZGF0YS5mcmFtZSJdLCJucm93IjoxLCJuY29sIjo3LCJzdW1tYXJ5Ijp7IkEgdGliYmxlIjpbIjEgw5cgNyJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUE1MVVTMjdiTUJDbDliRnNBVTRLWk5reldFaFRCTzJ1WFFROVFORUMyVEcwUk51RUpZb2xxU2JlWmRzTGRGV2dQWXF2MEVYdWtSTWtKVVdPRXpOR0cxU0FwSm5IeDlGdzVvMCtucDIvenM5emhGQ01raWhDY1dwTWxINys5R0g2RmhuRU9BT1VvTEY5WHhuU2tURXljNzk0dEpCVVJGUHpudlNZdXc2cy9lN1dleWp1L2MzTmZPUDhuY0JwV1JPbHdxQm5MdWdkYkg3LysrZWp6ZEg5di9pYmI3L1E4L2lRK0krWFlXS2NOQlFTeXp3NFVTdlc0SzlFTWpLcnFRZkhIRGRNS2NZWHdDcmJSdFJVVXl6dGR4d1lONHh2VFhMbHpXRkRLMFpnWWNSeHg5bVhqZ2E1akdWN1dVQStOdUhvMmp6dXpSVVNUVGNJTm15MVBkbm84UHRlVXRuV0R5UnozSUNVVlhOc3Z4aFVMcjRvTGdMbXNOSjRSZGZHc2tvYVhEL3Q4WEFoMjA1QUxjUFZ5WXdvaW0xaEd5cUJGRDJ6dGtFb2lJSTdSU3NUNWFqWHRndVovclVSS1cyRVhqL3BnL1B6eXlYVFZBbFNRajJTLyt0cXYzY0VLbXpvbGhPcENpeHhEQUhGeWVuV1BIMUEzd0NhaUZmSEFDZExwclFyUnd4eWo2R0k1WkpJVW1vcWQvVHZHODA3VXpGV3VuSFlGVXF2ZHIwV29RcjgvT3lkcmR5cXE1aExwNTB3Wk5ZS3pWcXVmRy9TWVBOQUJzQmh4NjBLcTJtNTdQaHFlZ0lxOC9ka2o1MEZWWUMrRHlsZk1BN0hUbXN5bzdWM0RzekU5T05WQ01tNGhwUFlPU3AwcXdud2NqczBIbkYvajdzL0NUQVF6a1FGQUFBPSJ9 -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbIm9uZV9za2ltX2RmIiwidGJsX2RmIiwidGJsIiwiZGF0YS5mcmFtZSJdLCJucm93IjoxLCJuY29sIjo3LCJzdW1tYXJ5Ijp7IkEgdGliYmxlIjpbIjEgw5cgNyJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUE1MVVTMjdiTUJDbDliRnNBVTRLWk5reldFZ2JCTzJ1WFFROVFORUMyVEcwUk51RUpZb2xxU2JlWmRzTGRGV2dQWXF2MEVYdWtSTWtKVVdPRXpOR0cxU0FwSm5IeDlGdzVvMCtucDJmNU9jNVFpaEdTUlNoT0RVbVNqOS8rakI5aXd4aW5BRkswTmkrcnd6cHlCaVp1Vjg4V2tncW9xbDVUM3JNWFFmV2ZuZnJQUlQzL3VabXZuSCtUdUMwcklsU1lkQXpGL1FPTnIvLy9mUFI1dWorWC96TnQxL29lWHhJL01mTE1ERk9HZ3FKWlI2Y3FCVnI4RmNpR1puVjFJTmpqaHVtRk9NTFlKVnRJMnFxS1piMk93Nk1HOGEzSnJueTVyQ2hGU093TU9LNDQreExSNE5jeHJLOUxDQWZtM0IwYlI3MzVncUpwaHNFRzdiYW5teDArSDB2cVd6ckI1STVia0RLcWptMlh3d3FGMThVRndGeldHbThvbXRqV1NVTnJwLzJlTGlRYlNlZ2x1SHFaRVlVeGJhd0RaVkFpcDVaMnlBVVJNR2RvcFdKY3RScjI0Vk0vOXFJbERaQ3I1LzB3Zm41NVpKcHFnUXBvUjdKLzNXMTN6c0NGVFoweTRsVUJaWTRob0RpOWVuV1BIMUEzd0NhaUZmSEFDZExwclFyUnd4eWo2R0k1WkpJVW1vcWQvVHZHODA3VXpGV3VuSFlGVXF2ZHIwV29RcjgvT3lkcmR5cXE1aExwNTB3Wk5ZS3pWcXVmRy9TWVBOQUJzQmh4NjBLcTJtNTdQaHFlZ0lxOC9ka2o1MEZWWUMrRHlsZk1BN0hUbXN5bzdWM0RzekU5T05WQ01tNGhwUFlPU3AwcXdud2NqczBIbkYvajdzL0t4Sk9yVVFGQUFBPSJ9 -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["skim_variable"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n_missing"],"name":[2],"type":["int"],"align":["right"]},{"label":["complete_rate"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["min"],"name":[4],"type":["date"],"align":["right"]},{"label":["max"],"name":[5],"type":["date"],"align":["right"]},{"label":["median"],"name":[6],"type":["date"],"align":["right"]},{"label":["n_unique"],"name":[7],"type":["int"],"align":["right"]}],"data":[{"1":"date","2":"0","3":"1","4":"1910-01-01","5":"2019-05-31","6":"1967-10-04","7":"39963","_rn_":"1"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-frame-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbIm9uZV9za2ltX2RmIiwidGJsX2RmIiwidGJsIiwiZGF0YS5mcmFtZSJdLCJucm93IjoxLCJuY29sIjoxMSwic3VtbWFyeSI6eyJBIHRpYmJsZSI6WyIxIMOXIDExIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQTdWVHpZN1RNQkIyMDZTL2FndmFCK0MybkZxVlhWVndnME9GUU9LMEFtbHZXVGR4VzZ1SkUyeUgzZDY2U0dqRkdhblM4Z1pjRUFmdWNPYm5KWHBHUXJ6QUxuYnFTVmhyaGJnd1V1SnZ4cC9IOXZpYmcvSGhmdXV3aFJDcUl0ZHhVTlZURUhuUG5qN3MzME1xb3B3S2NsRlRqeWVLdEtOQVczMDMvcGhvU3hLbmhHT1pjYUxjVGo2Rk9xL1YyTlg0L3M4djQvY2YzaDJBLzJCNC92WFRyNDl2Q3YvVzZkbk5IOTNINEgrK2pjQzI4N3Y3dVpYcm4zeFQ5cjN3UitmYTNoYitvOTJwdHVLWWFLV1AyZHVzVHpmclY1djEyV2I5VW1IcmVoN0RNUkZtVGRzRU8ySkJZLzhGNWhSUEltS0NUZWJIVkFqS1pzQUtramlOaUNTK0tnS3czSmhnWnJBalFrRHAwS0JxdWpjcTRLaU0zb1dvbTk0WlF0aWRVeUd0QXpkNWNqeUFRK3VpT3l2MXUxUm1FME1zc2EvWVFLeWdSbTk5TFNsSW9wS2thbUtSNnVIVTF6dGFBcWdlRFk0c1ppMlUvb0lzRmRMYXFxenkxN3pLbVBFa1M2SGc5bXhuZ2dYeGRmVmp3b0hrL09NRFdLa2dpNThKRXFvc083bmF0eWs5dUVKTVdRSHhDV2hDQ1ZzdWpkTmdmc2JvOHd3ZXVIVThwNUtJRkFkUUQvZXZ5V294Q1draGlUTGJkbTNqUDh2R3VUUWJWYUdJd1J4ekhFakNnVHd1eFZ0bm1hb1lEUlM4c0lXU3Q0UmNwcllLeWpWWCt5cUlzQkFXdDZYVk5wanlyWmJzTGVwSkttbkNoSGtyejFwYzRWYWdsekd0eXJBZnpETzI2TytCNnN6WHVRYTNyYXFBRG1xRXpTaURNbmdSbnBESU9GM1ZRWG03RFZKT21ZU2I2TDRheUVSaTRMVjBFNWxJZmpkMDhSdDdtcFVxWmdVQUFBPT0ifQ== -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbIm9uZV9za2ltX2RmIiwidGJsX2RmIiwidGJsIiwiZGF0YS5mcmFtZSJdLCJucm93IjoxLCJuY29sIjoxMSwic3VtbWFyeSI6eyJBIHRpYmJsZSI6WyIxIMOXIDExIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQTdWVHpZN1RNQkIyMDZTL2FoZTBEOEJ0T2JVcVZCWGM0RkFoa0RpdFFOcGIxazNjMW1yaUJOdlozZDY2U0dqRkdhblM4Z1pjRUFmdWNPYm5KWHBHUXJ6QUxuYnFTVmhyaGJnd1V1SnZ4cC9IOXZpYi9mSEJzSFhRUWdoVmtlczRxT29waUx6bnp4NzE3aU1WVVU0RnVhaXB4eE5GMmxXZ3JiNGJmMHkwSllsVHdySE1PRkZ1SjU5Q25kZHE3R3I4NE9lWDhmc1A3L2JCZnpnNC8vcnAxOGMzaFgvcjlPem1qKzRUOEQvZlJtRGIrYjFoYnVYNnA5K1VmUy84MGJtMnQ0WC9lRytxclRnbVd1bGo3bXpXcDV2MXE4MzZiTE4rcWJCMVBZL2htQWl6cG0yQ0hiR2dzWCtFT2NXVGlKaGdrL2t4RllLeUdiQ0NKRTRqSW9tdmlnQXNOeWFZR2V5SUVGQTZNS2lhM2gwVmNGUkc3MEhVVGU4TUlPek9xWkRXZ1pzOE9lN0RvWFhSblpYNlhTcXppU0dXMkZkc0lGWlFZMmQ5TFNsSW9wS2thbUtSNnVIVTF6dGFBcWdlOWc4dFppMlUvb0lzRmRMYXFxenkxN3pLbVBFa1M2SGc5bXhuZ2dYeGRmVmp3b0hrL09NRFdLa2dpNThKRXFvc3U3bmF0eWs5dUVKTVdRSHhDV2hDQ1ZzdWpkTmdmc2JvaXd3ZXVIVThwNUtJRkFkUUQvZXZ5V294Q1draGlUTGJkbTNqUDh2R3VUUWJWYUdJd1J4ekhFakNnVHd1eFZ0bm1hb1lEUlM4c0lXU3Q0UmNwcllLeWpWWCt5cUlzQkFXdDZYVjFwL3lyWmJzTGVwSkttbkNoSGtyejFwYzRWWmdKMk5hbFdFdm1HZHMwUnVDNnN6WHVRYTNyYXFBRG1xRXpTaURNbmdSbnBESU9GM1ZRWG03OVZOT21ZU2I2TDdxeTBSaTRMVjBFNWxJZmpkMDhSdFp1TXRKWmdVQUFBPT0ifQ== -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["skim_variable"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n_missing"],"name":[2],"type":["int"],"align":["right"]},{"label":["complete_rate"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["mean"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["sd"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["p0"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["p25"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["p50"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["p75"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["p100"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["hist"],"name":[11],"type":["chr"],"align":["left"]}],"data":[{"1":"temperature","2":"3465","3":"0.993441","4":"16.60077","5":"7.876492","6":"-11.5","7":"11.1","8":"16.3","9":"21.6","10":"48.3","11":"▁▅▇▂▁","_rn_":"1"}],"options":{"columns":{"min":{},"max":[10],"total":[11]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-frame-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmFpbmZhbGwgJT4lXG4gIGhlYWQoKSAlPiVcbiAga2FibGUoKSAlPiVcbiAga2FibGVfc3R5bGluZyhjKFwiaG92ZXJcIiwgXCJzdHJpcGVkXCIpKVxuYGBgIn0= -->
-<pre class="r"><code>rainfall %&gt;%
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGVtcGVyYXR1cmUgJT4lXG4gIGhlYWQoKSAlPiVcbiAga2FibGUoKSAlPiVcbiAga2FibGVfc3R5bGluZyhjKFwiaG92ZXJcIiwgXCJzdHJpcGVkXCIpKVxuYGBgIn0= -->
+<pre class="r"><code>temperature %&gt;%
   head() %&gt;%
   kable() %&gt;%
   kable_styling(c(&quot;hover&quot;, &quot;striped&quot;))</code></pre>
@@ -2110,97 +2238,55 @@ Group variables            None      </code></pre>
 <table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
  <thead>
   <tr>
-   <th style="text-align:left;"> station_code </th>
    <th style="text-align:left;"> city_name </th>
-   <th style="text-align:right;"> year </th>
-   <th style="text-align:left;"> month </th>
-   <th style="text-align:left;"> day </th>
-   <th style="text-align:right;"> rainfall </th>
-   <th style="text-align:right;"> period </th>
-   <th style="text-align:left;"> quality </th>
-   <th style="text-align:right;"> lat </th>
-   <th style="text-align:right;"> long </th>
-   <th style="text-align:left;"> station_name </th>
+   <th style="text-align:left;"> date </th>
+   <th style="text-align:right;"> temperature </th>
+   <th style="text-align:left;"> temp_type </th>
+   <th style="text-align:left;"> site_name </th>
   </tr>
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> 009151 </td>
-   <td style="text-align:left;"> Perth </td>
-   <td style="text-align:right;"> 1967 </td>
-   <td style="text-align:left;"> 01 </td>
-   <td style="text-align:left;"> 01 </td>
-   <td style="text-align:right;"> NA </td>
-   <td style="text-align:right;"> NA </td>
-   <td style="text-align:left;"> NA </td>
-   <td style="text-align:right;"> -31.96 </td>
-   <td style="text-align:right;"> 115.79 </td>
-   <td style="text-align:left;"> Subiaco Wastewater Treatment Plant </td>
+   <td style="text-align:left;"> PERTH </td>
+   <td style="text-align:left;"> 1910-01-01 </td>
+   <td style="text-align:right;"> 26.7 </td>
+   <td style="text-align:left;"> max </td>
+   <td style="text-align:left;"> PERTH AIRPORT </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> 009151 </td>
-   <td style="text-align:left;"> Perth </td>
-   <td style="text-align:right;"> 1967 </td>
-   <td style="text-align:left;"> 01 </td>
-   <td style="text-align:left;"> 02 </td>
-   <td style="text-align:right;"> NA </td>
-   <td style="text-align:right;"> NA </td>
-   <td style="text-align:left;"> NA </td>
-   <td style="text-align:right;"> -31.96 </td>
-   <td style="text-align:right;"> 115.79 </td>
-   <td style="text-align:left;"> Subiaco Wastewater Treatment Plant </td>
+   <td style="text-align:left;"> PERTH </td>
+   <td style="text-align:left;"> 1910-01-02 </td>
+   <td style="text-align:right;"> 27.0 </td>
+   <td style="text-align:left;"> max </td>
+   <td style="text-align:left;"> PERTH AIRPORT </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> 009151 </td>
-   <td style="text-align:left;"> Perth </td>
-   <td style="text-align:right;"> 1967 </td>
-   <td style="text-align:left;"> 01 </td>
-   <td style="text-align:left;"> 03 </td>
-   <td style="text-align:right;"> NA </td>
-   <td style="text-align:right;"> NA </td>
-   <td style="text-align:left;"> NA </td>
-   <td style="text-align:right;"> -31.96 </td>
-   <td style="text-align:right;"> 115.79 </td>
-   <td style="text-align:left;"> Subiaco Wastewater Treatment Plant </td>
+   <td style="text-align:left;"> PERTH </td>
+   <td style="text-align:left;"> 1910-01-03 </td>
+   <td style="text-align:right;"> 27.5 </td>
+   <td style="text-align:left;"> max </td>
+   <td style="text-align:left;"> PERTH AIRPORT </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> 009151 </td>
-   <td style="text-align:left;"> Perth </td>
-   <td style="text-align:right;"> 1967 </td>
-   <td style="text-align:left;"> 01 </td>
-   <td style="text-align:left;"> 04 </td>
-   <td style="text-align:right;"> NA </td>
-   <td style="text-align:right;"> NA </td>
-   <td style="text-align:left;"> NA </td>
-   <td style="text-align:right;"> -31.96 </td>
-   <td style="text-align:right;"> 115.79 </td>
-   <td style="text-align:left;"> Subiaco Wastewater Treatment Plant </td>
+   <td style="text-align:left;"> PERTH </td>
+   <td style="text-align:left;"> 1910-01-04 </td>
+   <td style="text-align:right;"> 24.0 </td>
+   <td style="text-align:left;"> max </td>
+   <td style="text-align:left;"> PERTH AIRPORT </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> 009151 </td>
-   <td style="text-align:left;"> Perth </td>
-   <td style="text-align:right;"> 1967 </td>
-   <td style="text-align:left;"> 01 </td>
-   <td style="text-align:left;"> 05 </td>
-   <td style="text-align:right;"> NA </td>
-   <td style="text-align:right;"> NA </td>
-   <td style="text-align:left;"> NA </td>
-   <td style="text-align:right;"> -31.96 </td>
-   <td style="text-align:right;"> 115.79 </td>
-   <td style="text-align:left;"> Subiaco Wastewater Treatment Plant </td>
+   <td style="text-align:left;"> PERTH </td>
+   <td style="text-align:left;"> 1910-01-05 </td>
+   <td style="text-align:right;"> 24.8 </td>
+   <td style="text-align:left;"> max </td>
+   <td style="text-align:left;"> PERTH AIRPORT </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> 009151 </td>
-   <td style="text-align:left;"> Perth </td>
-   <td style="text-align:right;"> 1967 </td>
-   <td style="text-align:left;"> 01 </td>
-   <td style="text-align:left;"> 06 </td>
-   <td style="text-align:right;"> NA </td>
-   <td style="text-align:right;"> NA </td>
-   <td style="text-align:left;"> NA </td>
-   <td style="text-align:right;"> -31.96 </td>
-   <td style="text-align:right;"> 115.79 </td>
-   <td style="text-align:left;"> Subiaco Wastewater Treatment Plant </td>
+   <td style="text-align:left;"> PERTH </td>
+   <td style="text-align:left;"> 1910-01-06 </td>
+   <td style="text-align:right;"> 24.4 </td>
+   <td style="text-align:left;"> max </td>
+   <td style="text-align:left;"> PERTH AIRPORT </td>
   </tr>
 </tbody>
 </table> <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [["$","$"]]}})</script><script>/*
@@ -2228,13 +2314,102 @@ if(document.getElementById&&document.childNodes&&document.createElement){if(!(wi
 
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Above I have loaded the data from the tidytuesday page, which has two
-data sets (temperature and rainfall).</p>
+<p>One of the first things I was interested in was highest temperature.
+One thing that I noted about the data set <code>temperature</code> is
+that it is extremely large. When viewing all of the data in that set,
+there appears to be 528,278 entries, sorted into five columns.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInNwZWNfdGJsX2RmIiwidGJsX2RmIiwidGJsIiwiZGF0YS5mcmFtZSJdLCJucm93Ijo1NzEsIm5jb2wiOjIsInN1bW1hcnkiOnsiQSB0aWJibGUiOlsiNTcxIMOXIDIiXX19LCJyZGYiOiJINHNJQUFBQUFBQUFBNldaQjJ4ZFZ4bkh6NzF2K2puRG1XMW03VGh4cGgzSEk5NTV6Mis1N0JLMWtGUUk2bWEwVVJJN3NoMWFaZ29xb3FBQXBTeTFVS0F0RkNwR2dTSkt4SGlIb2lJS0RSS1VJaUtvRklZcXdsSkt5aWdoQ2YvcisvdVFzUXBDd3RKUHgyZDk4NXh6ejcxdlozbFhaMjVYemptWGNNa3dkSW1VL25XcGE2NnV0dlk2dGFnU3VLU3JpOHFiTldpUi9va2E1NmtZT0hZMkdweTV0N0QxenVqdnJzSzJ6dW0vd2pZMy9WZG8yei85VitoWUZ2ZHZmano2TzFsb3A3MlZzdjJXZVB4V200KzhyVGFmOXZhbjQzcWJ5VWZlRmlzWnQ0bitMWlN0dEhjK0ZKZGRKby8reldZLy9hM0lhNlYvbzluTHVIYkd0Wm05WmlmajJ4bTN4ZnhEM2pic2IzOXhYTjlvOXBvYzRyU1Y4WnZOVHNxTnRIZFM3eUJ1VzlEWFJ0bUpuRTcwYk1DdVR1elpZUEtwYjJOY0ovSTIwYjdlN0RLOUpnYy9XbWpmYUg1Ym5pMXVsa2ViUjcyTGVoZjZtdEhYaWJ3TzZwc1l2ODdzeHA1MXRLODNPMDBlZnF3eE9aWnZ5ZzVyWjl3MjlIZmh6MXJrYkdMY0J2UjBtTjM0MThINGRkaXpudkhyYlJ4MmRTTy9oWG9ML2QzbUYvTmFrTE9XZWlQajE5TGVUSHMzOXEyajdNYWVMdVN0b2IyWnNvbHlqZW0zZWFhSGVkdHBYMHQ5QStPYjBkOXRkcGo5K045bGRoSGZidk9iK0s2bDNtUjZrTFBLNnRaUHVZYis3Y2piYm43WmVQenRvYjZDc2hIN0c3Rm51NVhZMGNPOEpwTlBYcG9ZMThPNDdmalZnN3dleHEzR3ZoN21OMUwyWUdjUGNuck5Qc1pmZ1gxWE1MNFhQU3VSMzJ2dHBnYzVxK2xmWmYwMkhuMTl5TzNCM2o3MDlxRzNqM2tyYkQ3amw1dWR6RnRKZmJuSnA5NW5jdEhYai94KzdGeUpudVdtai9uOStIZTV5YUhleDd4ZXhsOU91ZFRtWVdjLytwWlI3ME5PUCtPVzRFZS90U09uSDNzSFREL2pCOHh1NWczUXZvejZvSTNEdnFWbUYvSXZ3NDRCeWtINkJ5Z1gyemlUVDMzQTZ2aXpnUHBpOUExaTV5TGFsNWg4SzVrM2dGOUROZzkvQnRFenlQeUYyRE5FLzJLckkyOElmWVBJVzJSNjhIdUJqVVB2RUhLSGtEUGYraG0vRVAxRHlHdXdPdVVPOURVd2Z3ZDJ6YU9lczNiMHpjRy9PVGFmL29XME4xRHVzQko3NnJCekIvUHkxbytkTytqUE0zNEg5dWF4cjU3MnVUWU9lN0ltejhaYlAzSUw2QW1zSGY5UzFBdlVlVkFYWXNkT0ZncTc0L1lrODlQNEdWSm1hYy9ZUE96TTA0L2lRaUx1ejErMDl1UEliNG5yU2JPZnNqQVpqLytIMWZHckVQdVRmdzY3bmZVVGg4TDlqUFA0SGV2TC80WHliOWc3VEZrNGhkK3huUHdaNUE3SGZ1ZWZzZmljaStVN200Kzg4L2c5akovRCtET01mOE94UGZsbnNYTjRrdkd4dmZsek50OUs4akJzNDRsbndld2lMOFBrZFJnL2gra3ZtbjJ4WC9temNUMy9xMWgralRML21NbUw0NW8vWWZOaitmblR6SXU3OTlmd00vK0UyUmtiN3RrWE5lSmJvOSt6VHIydHQySWNseHA1OCt5Yi9PL3hzeGpIeGJPK1BPdXBScjVxLzdJdmpvZTMvVmNrN2tYbTJmNHR4dkgxdHE1S2NWeTk3YzhpZFRzbmluRythK1l2L3R0ZmpYVmJJNC9lMnNsZi9oVDJsZUw0ZVRzM2ltWjN2QTVxRnZlaTZXV2RGR1BGbm4zbTJkKzFzMll2NjdRWTU5MXpYdGJZSDU3OTd6bGZhc1RWMi80dXNuNUx4QlY3ZlFQNjJKL2U5bE9SZFZWRUR1ZW50MzFmd3E1U0MzR24zNTRMcFRndjNzN3BVbXgzemZaVEtZNjN0K2RNaWJ6eWZQVThIenpuaTE5a2N2Q1BmZXJ0K1ZReXUxaEhQT2M4ejIzUGM4dnpuUFpMYlh6c3A3Zm5iK2s0ZmpEZTdoOGx6cFVTNTB5WlBOdnp0c1IrV0diK2tLOFM1MVlaK1dYMmQ1bjRjQi8wZHY4b1k1ODluOHVjRjJYc3NudFBDZi9zWGxibTNDbGJIRTJleVdIZDJQMm52SnQyODRjNGNlL3pkdDh0eDM1NzduVitwY25GWCs1VjN1NXRaZXRuL1ZUTUx1SlE0ZndxRTU4Sys1RDdvN2Q3YTRWOVhiRTY5dHY5dE1MNFJwdUgzb3IxNDFlRnVObjl0MklsNTJxRk9GU0ljNFU4VjJMN2ZKUHBJZDY4ZjNqZVd6enZDWjU3dXJmM29DcCtWc2t6NzNlZTl4cHY5L2dLKzdKS0hKcVJZKzhWRmVKWUpjOVY0bG5GcjJiVGIzRkNicFg1VmZ5cm1sM3NEOTdUUE8reG52Y3ZiKzh0RmZKVkpVN1ZXOUJQM3FyMGo3QU9lSi8xTGNqai9kZnpmdWJ0ZmJDSy9DcHhycHAvMWs4OFJ2QjNoRGlPNFBjSS9veGd4NVZ4dTRiT2piN3ZxSGlIYy9YZkVGOFd4OFhyaFZaTHZXNWE5WHJycjVlbDlYcHJydGVUSVBjNzhaajR0dmlXZUJBK0x6NHA3aFlmRVc4WGJ4RUtRdTdONHJDNFVVaHZicSs0VnV3V0x4VXZFaThReWxoT3V6NG52VG5kQW5ONlE4dEpmMDV2dERsRk82ZWRuTk9wazlPSmwxc2lJbnYwVk12VkN6MEY2aTZJOCtJNThRZHhSdnhNUENtK0w3NG5IaEhmRkErTEw0b3ZpSHZFeDhRN2hXeXVPeVN1aDFIeGFuRU5YQzEwRTZxVGJYV3lxMDZuU2QwS3NVQ2tuY3YrWGVnSm5QMnpPQ3QrSzA2THA0VDBaMnRDK3JOZkY5S2QvYXhRM0xLZkVQZUs5NHIzaU52RUViRkh5SWJzVG5HVlVKeXl5blMyUTdRTHhTZXIyR1FWaTZ4c3lPYWN5MXlDWjhRZnhaUHdJemdKaWtsR3VjeDhSOGlXalBLVythQjRsN2hKU0hkR09jcm9wTWtvM2hrOU9USjZ1bVRrWi9xVStLN1FHa2gvVFdqdHBEOGpQaTN1Ri9lSnU4U2RRbXNoclhXUW5oS1NtWDZWVVA3VHJ4Q0thVnByTGEzVElhMzhwcFhmOUdWQ3VsTG54TS9GVjhTWGhQS1ZVcHhTSHhlU25mcUFlTDlRdkZKSGhlS1ZVczVTaWxOS2F5cDFwZEJiYTZwTktFNHA1U3VwdkNUL0pCU2JwTlpIOG1ueEZHaXRKSDhJWHhWYXkwbnBTZDRoYmhmU2t6d0dieEpqNHFCNG1kQTZUa3BmVW9kWHNsTnNFOW8zU2ZtVmJCRHpoTlpxc2s1azQ0K3VDZG1SK0lXUTNzU2pRdkZMYUMwa2xJT0UxbUxpVnFFNEpWNGlLcUQ5a2RCTkl0RXJ0QVlUMHBOb0ZadUY5bWhDYXlEVUdneTFUMFA1RlA1VVBDR1U2MUJyTC95Y1VJNUN4VEI4bTFCZVF1M0o4RHJ4R3FIY2hLOFVpbUVvbjBMdHlWQjZROTJTUSszTFVHK3BvWFNHVzRYMGhvcHIyQUxhZzZIOENyUUhBK2tQZmlOK0xYNHA1R2NnTzRMSHhRbnhnUGlVVUQ0RHJaVkE5Z1RhZzRGaUhueFlLTzZCOGh1OER4VDdRUFlHaWttZytBZXZFNjhWazBKblM2QTlFbWl0QnJ1RTFsV2dmUnE4VUdpdkJJcFowQS9kUW5rSnRHY0M1U2JRMHpCUXpBTGxLTkI1R0NoSFFUMWtJU1dpNytFWDREejhWV2c5dVdkQitYVHkyNTBCclMwbi85MXAwRnAyUHhFL0ZvcUYwMTUwUHhDS2lYc0Vvc05kZVhJNmo1M09DSGRpQmcvRFErTEJHZWpzZFErQWN1c1VWNmU0dXZ0bWNBOG96dTZqY0RkbzN6dkYyMzFJS09idUR0Qlo1RzRIeGQrOUcvU01jSHBtdU52ZzFsbThWVVFQdjJQd1J2RUcwTFBGM1F3Nlk1ek9CS2NjdWdseFpCYmo0akFjaEJ0RTlPelNNOFRwTEhIS3U3c090SDZkem1wM0xXZzl1RjJnTmUxMnp1RGw0aXJRT25FNlYxMTBRNHB1bmRGTnZTQ0daaEY5U1lxK1VrVmY2bnBtMEFIUkx5THRJdm9TSHYycXNBazJRdlNGUG5ycVIxOW9vNis3MFpmbzZCYlJOSU5Hc1hvR3E4UktXQTdMUkhUNzFqbnBvdHUvem1hM0dLTGZiaGJPWWdFMHpHSyttUE04MUVQMGkxRWRaSitIakVoRGFnYkovMERpdnhEK2p3VC9ILy8yWTFkcWJQVHd2a21DRWRKWVA3WHY4SkY5RTZOVFJ5ZjIyWTlpWTdNbTFrMk0zOVJtaytlNitCaDFseTVkZUhTMmhqMkhSaWROZ3pYbTlvNU9qYmJ0bjlCODFTN09tcElaUHpKMVlIeE1rOEpGeEhQbTVHQmlWc1A4bzJPUkpYdGI5OXg0ZE94ZzlJUGVkTjRpZngzV0JmRTl6LzZQNGhpcERDOGhLb1dvOUw2eEd3Nk1tZGVwUTZQWDd6dEVaWjQ4bm5hNDdjakVnYkVwODBTdGsyMVQ0MU9qTmk2M1oveVF0VXo3NWk3K0UyalRhekYrSEFBQSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["temperature"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"NA","2":"3465"},{"1":"15.8","2":"3005"},{"1":"17.2","2":"2996"},{"1":"17.0","2":"2956"},{"1":"15.2","2":"2938"},{"1":"18.1","2":"2885"},{"1":"13.9","2":"2879"},{"1":"16.4","2":"2857"},{"1":"14.7","2":"2855"},{"1":"16.5","2":"2852"},{"1":"15.6","2":"2834"},{"1":"17.6","2":"2795"},{"1":"15.7","2":"2761"},{"1":"18.2","2":"2755"},{"1":"16.9","2":"2753"},{"1":"15.0","2":"2735"},{"1":"15.4","2":"2735"},{"1":"14.4","2":"2734"},{"1":"14.1","2":"2725"},{"1":"13.0","2":"2717"},{"1":"14.0","2":"2716"},{"1":"14.6","2":"2695"},{"1":"19.7","2":"2689"},{"1":"20.2","2":"2688"},{"1":"16.0","2":"2686"},{"1":"13.8","2":"2669"},{"1":"17.7","2":"2664"},{"1":"14.9","2":"2662"},{"1":"14.5","2":"2660"},{"1":"12.7","2":"2650"},{"1":"14.8","2":"2649"},{"1":"16.7","2":"2638"},{"1":"15.1","2":"2635"},{"1":"17.4","2":"2633"},{"1":"18.0","2":"2630"},{"1":"16.6","2":"2628"},{"1":"14.2","2":"2623"},{"1":"16.8","2":"2622"},{"1":"17.9","2":"2615"},{"1":"16.3","2":"2601"},{"1":"12.6","2":"2598"},{"1":"13.1","2":"2595"},{"1":"17.1","2":"2586"},{"1":"15.9","2":"2584"},{"1":"13.6","2":"2582"},{"1":"16.2","2":"2581"},{"1":"12.9","2":"2578"},{"1":"19.2","2":"2572"},{"1":"18.5","2":"2571"},{"1":"14.3","2":"2564"},{"1":"15.3","2":"2557"},{"1":"19.1","2":"2555"},{"1":"19.3","2":"2553"},{"1":"12.0","2":"2541"},{"1":"19.4","2":"2537"},{"1":"12.4","2":"2523"},{"1":"13.7","2":"2517"},{"1":"17.3","2":"2507"},{"1":"19.5","2":"2506"},{"1":"13.2","2":"2498"},{"1":"11.6","2":"2494"},{"1":"17.8","2":"2487"},{"1":"19.0","2":"2481"},{"1":"19.9","2":"2480"},{"1":"11.4","2":"2465"},{"1":"12.5","2":"2463"},{"1":"16.1","2":"2442"},{"1":"13.5","2":"2433"},{"1":"12.8","2":"2412"},{"1":"15.5","2":"2402"},{"1":"19.6","2":"2402"},{"1":"20.0","2":"2401"},{"1":"20.5","2":"2398"},{"1":"9.7","2":"2389"},{"1":"19.8","2":"2389"},{"1":"18.4","2":"2388"},{"1":"13.3","2":"2369"},{"1":"10.7","2":"2359"},{"1":"12.1","2":"2342"},{"1":"10.8","2":"2332"},{"1":"11.7","2":"2331"},{"1":"11.5","2":"2321"},{"1":"20.3","2":"2310"},{"1":"9.4","2":"2298"},{"1":"18.7","2":"2296"},{"1":"20.7","2":"2293"},{"1":"18.8","2":"2288"},{"1":"18.3","2":"2282"},{"1":"17.5","2":"2272"},{"1":"20.9","2":"2269"},{"1":"10.0","2":"2250"},{"1":"13.4","2":"2239"},{"1":"12.3","2":"2238"},{"1":"18.6","2":"2236"},{"1":"20.1","2":"2224"},{"1":"18.9","2":"2220"},{"1":"10.6","2":"2213"},{"1":"11.9","2":"2212"},{"1":"11.8","2":"2210"},{"1":"20.4","2":"2193"},{"1":"21.5","2":"2191"},{"1":"11.2","2":"2184"},{"1":"11.3","2":"2160"},{"1":"21.6","2":"2147"},{"1":"10.9","2":"2145"},{"1":"11.1","2":"2130"},{"1":"10.4","2":"2128"},{"1":"8.2","2":"2121"},{"1":"10.1","2":"2119"},{"1":"9.9","2":"2098"},{"1":"21.0","2":"2096"},{"1":"10.5","2":"2089"},{"1":"21.1","2":"2083"},{"1":"20.6","2":"2066"},{"1":"9.0","2":"2065"},{"1":"9.5","2":"2058"},{"1":"8.5","2":"2047"},{"1":"9.2","2":"2047"},{"1":"11.0","2":"2033"},{"1":"21.8","2":"2030"},{"1":"8.3","2":"2005"},{"1":"22.0","2":"2005"},{"1":"10.3","2":"2002"},{"1":"12.2","2":"2002"},{"1":"9.6","2":"1997"},{"1":"21.2","2":"1997"},{"1":"9.8","2":"1995"},{"1":"21.9","2":"1993"},{"1":"20.8","2":"1990"},{"1":"21.7","2":"1968"},{"1":"21.4","2":"1948"},{"1":"21.3","2":"1942"},{"1":"10.2","2":"1933"},{"1":"8.8","2":"1911"},{"1":"22.2","2":"1891"},{"1":"7.4","2":"1881"},{"1":"22.4","2":"1822"},{"1":"8.7","2":"1813"},{"1":"9.1","2":"1812"},{"1":"22.7","2":"1800"},{"1":"22.6","2":"1798"},{"1":"9.3","2":"1753"},{"1":"22.1","2":"1736"},{"1":"23.6","2":"1729"},{"1":"6.9","2":"1723"},{"1":"8.0","2":"1716"},{"1":"8.4","2":"1707"},{"1":"22.8","2":"1704"},{"1":"22.3","2":"1702"},{"1":"23.1","2":"1699"},{"1":"8.6","2":"1690"},{"1":"22.5","2":"1689"},{"1":"8.9","2":"1671"},{"1":"23.3","2":"1664"},{"1":"22.9","2":"1652"},{"1":"23.0","2":"1635"},{"1":"23.5","2":"1628"},{"1":"7.6","2":"1626"},{"1":"23.2","2":"1622"},{"1":"8.1","2":"1621"},{"1":"23.7","2":"1605"},{"1":"23.8","2":"1570"},{"1":"24.1","2":"1562"},{"1":"23.4","2":"1560"},{"1":"7.9","2":"1559"},{"1":"7.8","2":"1556"},{"1":"24.3","2":"1523"},{"1":"7.0","2":"1500"},{"1":"24.2","2":"1462"},{"1":"24.5","2":"1458"},{"1":"7.7","2":"1457"},{"1":"7.5","2":"1444"},{"1":"7.3","2":"1440"},{"1":"24.0","2":"1434"},{"1":"24.7","2":"1429"},{"1":"25.6","2":"1428"},{"1":"23.9","2":"1423"},{"1":"25.1","2":"1397"},{"1":"25.4","2":"1392"},{"1":"25.2","2":"1378"},{"1":"6.8","2":"1360"},{"1":"24.6","2":"1355"},{"1":"6.7","2":"1352"},{"1":"24.9","2":"1337"},{"1":"7.2","2":"1326"},{"1":"6.5","2":"1321"},{"1":"24.8","2":"1318"},{"1":"25.9","2":"1269"},{"1":"25.7","2":"1266"},{"1":"26.1","2":"1265"},{"1":"26.5","2":"1257"},{"1":"7.1","2":"1254"},{"1":"6.6","2":"1245"},{"1":"25.0","2":"1245"},{"1":"26.3","2":"1243"},{"1":"6.2","2":"1233"},{"1":"25.3","2":"1233"},{"1":"25.5","2":"1208"},{"1":"24.4","2":"1181"},{"1":"6.1","2":"1178"},{"1":"5.5","2":"1170"},{"1":"26.2","2":"1168"},{"1":"26.7","2":"1167"},{"1":"6.3","2":"1151"},{"1":"25.8","2":"1151"},{"1":"26.0","2":"1149"},{"1":"5.4","2":"1134"},{"1":"26.8","2":"1131"},{"1":"26.4","2":"1103"},{"1":"26.9","2":"1102"},{"1":"27.3","2":"1096"},{"1":"6.0","2":"1088"},{"1":"27.1","2":"1075"},{"1":"26.6","2":"1073"},{"1":"27.0","2":"1063"},{"1":"6.4","2":"1058"},{"1":"28.0","2":"1040"},{"1":"27.5","2":"1038"},{"1":"5.6","2":"1036"},{"1":"5.7","2":"1033"},{"1":"5.8","2":"1032"},{"1":"27.2","2":"1026"},{"1":"28.4","2":"1010"},{"1":"27.4","2":"993"},{"1":"5.2","2":"987"},{"1":"5.9","2":"965"},{"1":"27.8","2":"939"},{"1":"27.6","2":"933"},{"1":"27.7","2":"918"},{"1":"4.4","2":"906"},{"1":"5.0","2":"900"},{"1":"28.3","2":"858"},{"1":"4.9","2":"845"},{"1":"5.3","2":"837"},{"1":"28.2","2":"837"},{"1":"28.7","2":"836"},{"1":"27.9","2":"835"},{"1":"29.0","2":"824"},{"1":"28.1","2":"823"},{"1":"28.8","2":"817"},{"1":"28.6","2":"813"},{"1":"4.6","2":"811"},{"1":"29.1","2":"804"},{"1":"5.1","2":"785"},{"1":"29.2","2":"762"},{"1":"29.3","2":"747"},{"1":"28.9","2":"733"},{"1":"4.8","2":"728"},{"1":"28.5","2":"723"},{"1":"4.3","2":"715"},{"1":"29.7","2":"703"},{"1":"29.6","2":"685"},{"1":"29.4","2":"680"},{"1":"3.9","2":"672"},{"1":"29.5","2":"645"},{"1":"4.7","2":"640"},{"1":"29.9","2":"614"},{"1":"4.2","2":"608"},{"1":"29.8","2":"607"},{"1":"30.3","2":"604"},{"1":"4.1","2":"599"},{"1":"30.1","2":"592"},{"1":"3.8","2":"590"},{"1":"3.3","2":"582"},{"1":"30.7","2":"581"},{"1":"3.5","2":"578"},{"1":"3.6","2":"575"},{"1":"30.4","2":"573"},{"1":"4.5","2":"561"},{"1":"4.0","2":"559"},{"1":"30.0","2":"557"},{"1":"30.2","2":"553"},{"1":"3.2","2":"550"},{"1":"30.8","2":"550"},{"1":"31.0","2":"516"},{"1":"30.5","2":"514"},{"1":"30.6","2":"507"},{"1":"31.2","2":"491"},{"1":"30.9","2":"488"},{"1":"31.3","2":"484"},{"1":"3.4","2":"482"},{"1":"3.7","2":"481"},{"1":"31.7","2":"467"},{"1":"3.1","2":"460"},{"1":"31.9","2":"441"},{"1":"31.6","2":"425"},{"1":"31.5","2":"423"},{"1":"32.0","2":"420"},{"1":"2.2","2":"419"},{"1":"31.1","2":"416"},{"1":"2.7","2":"415"},{"1":"32.2","2":"413"},{"1":"32.4","2":"411"},{"1":"32.1","2":"410"},{"1":"32.7","2":"405"},{"1":"2.5","2":"403"},{"1":"2.8","2":"403"},{"1":"2.3","2":"399"},{"1":"3.0","2":"389"},{"1":"2.9","2":"388"},{"1":"32.6","2":"383"},{"1":"31.4","2":"377"},{"1":"32.5","2":"374"},{"1":"2.4","2":"371"},{"1":"1.9","2":"365"},{"1":"33.1","2":"353"},{"1":"32.3","2":"345"},{"1":"2.6","2":"344"},{"1":"31.8","2":"342"},{"1":"32.9","2":"340"},{"1":"1.8","2":"330"},{"1":"33.8","2":"327"},{"1":"33.0","2":"324"},{"1":"1.6","2":"314"},{"1":"2.1","2":"314"},{"1":"33.4","2":"309"},{"1":"33.3","2":"295"},{"1":"33.5","2":"291"},{"1":"32.8","2":"290"},{"1":"1.4","2":"288"},{"1":"1.5","2":"273"},{"1":"34.0","2":"272"},{"1":"33.7","2":"269"},{"1":"33.6","2":"268"},{"1":"0.8","2":"267"},{"1":"34.7","2":"267"},{"1":"1.1","2":"264"},{"1":"33.9","2":"264"},{"1":"2.0","2":"261"},{"1":"34.8","2":"258"},{"1":"1.7","2":"253"},{"1":"34.5","2":"253"},{"1":"34.3","2":"251"},{"1":"35.1","2":"251"},{"1":"35.3","2":"247"},{"1":"1.3","2":"245"},{"1":"34.9","2":"244"},{"1":"35.4","2":"244"},{"1":"1.2","2":"242"},{"1":"34.4","2":"235"},{"1":"34.2","2":"233"},{"1":"35.6","2":"233"},{"1":"34.6","2":"230"},{"1":"33.2","2":"228"},{"1":"34.1","2":"224"},{"1":"35.0","2":"224"},{"1":"35.5","2":"220"},{"1":"35.2","2":"214"},{"1":"36.0","2":"212"},{"1":"35.7","2":"211"},{"1":"1.0","2":"210"},{"1":"0.6","2":"206"},{"1":"-0.6","2":"204"},{"1":"0.2","2":"194"},{"1":"35.8","2":"194"},{"1":"0.1","2":"192"},{"1":"36.1","2":"191"},{"1":"0.5","2":"189"},{"1":"0.7","2":"188"},{"1":"-1.7","2":"185"},{"1":"0.3","2":"185"},{"1":"35.9","2":"185"},{"1":"-3.3","2":"183"},{"1":"-1.4","2":"183"},{"1":"-0.3","2":"179"},{"1":"-3.4","2":"175"},{"1":"-2.2","2":"175"},{"1":"36.3","2":"175"},{"1":"-1.6","2":"174"},{"1":"-3.6","2":"169"},{"1":"0.9","2":"169"},{"1":"36.9","2":"168"},{"1":"-2.8","2":"167"},{"1":"-2.9","2":"164"},{"1":"-1.5","2":"163"},{"1":"-0.1","2":"163"},{"1":"36.6","2":"163"},{"1":"-3.5","2":"161"},{"1":"36.5","2":"161"},{"1":"36.8","2":"160"},{"1":"-4.1","2":"158"},{"1":"37.4","2":"158"},{"1":"-2.6","2":"157"},{"1":"38.2","2":"157"},{"1":"-4.5","2":"156"},{"1":"36.2","2":"154"},{"1":"-3.9","2":"151"},{"1":"36.7","2":"149"},{"1":"-0.7","2":"146"},{"1":"-0.5","2":"146"},{"1":"0.0","2":"145"},{"1":"-1.9","2":"144"},{"1":"-1.3","2":"144"},{"1":"-2.0","2":"143"},{"1":"-1.2","2":"142"},{"1":"0.4","2":"142"},{"1":"38.1","2":"140"},{"1":"-3.8","2":"137"},{"1":"37.2","2":"136"},{"1":"37.3","2":"136"},{"1":"-0.2","2":"132"},{"1":"36.4","2":"132"},{"1":"37.1","2":"132"},{"1":"37.8","2":"132"},{"1":"-2.5","2":"130"},{"1":"-3.7","2":"128"},{"1":"-1.0","2":"127"},{"1":"37.7","2":"127"},{"1":"37.0","2":"124"},{"1":"-5.1","2":"123"},{"1":"-1.8","2":"123"},{"1":"-3.1","2":"122"},{"1":"-3.2","2":"120"},{"1":"-0.9","2":"120"},{"1":"-2.7","2":"119"},{"1":"37.9","2":"116"},{"1":"38.4","2":"115"},{"1":"-0.4","2":"114"},{"1":"-4.0","2":"112"},{"1":"-2.4","2":"112"},{"1":"-2.1","2":"112"},{"1":"37.5","2":"112"},{"1":"37.6","2":"111"},{"1":"-4.7","2":"109"},{"1":"-2.3","2":"109"},{"1":"38.0","2":"107"},{"1":"38.3","2":"107"},{"1":"-4.2","2":"103"},{"1":"-5.3","2":"102"},{"1":"38.5","2":"100"},{"1":"-4.3","2":"99"},{"1":"39.0","2":"97"},{"1":"-1.1","2":"96"},{"1":"38.7","2":"96"},{"1":"-4.4","2":"95"},{"1":"38.6","2":"94"},{"1":"-5.5","2":"90"},{"1":"-4.6","2":"90"},{"1":"-3.0","2":"89"},{"1":"-4.8","2":"88"},{"1":"39.2","2":"88"},{"1":"-0.8","2":"87"},{"1":"-5.0","2":"82"},{"1":"38.8","2":"82"},{"1":"38.9","2":"82"},{"1":"-5.2","2":"81"},{"1":"-6.1","2":"80"},{"1":"-4.9","2":"80"},{"1":"-6.3","2":"74"},{"1":"-5.6","2":"73"},{"1":"39.5","2":"69"},{"1":"-6.0","2":"68"},{"1":"39.1","2":"67"},{"1":"-5.4","2":"64"},{"1":"-6.7","2":"61"},{"1":"39.3","2":"61"},{"1":"39.4","2":"61"},{"1":"40.1","2":"61"},{"1":"-5.8","2":"60"},{"1":"39.9","2":"58"},{"1":"-6.4","2":"56"},{"1":"39.7","2":"55"},{"1":"39.8","2":"55"},{"1":"40.0","2":"55"},{"1":"40.2","2":"50"},{"1":"40.5","2":"50"},{"1":"-6.9","2":"49"},{"1":"-6.2","2":"48"},{"1":"40.4","2":"47"},{"1":"-5.9","2":"45"},{"1":"40.9","2":"42"},{"1":"41.1","2":"42"},{"1":"-6.5","2":"41"},{"1":"39.6","2":"41"},{"1":"-7.0","2":"40"},{"1":"40.3","2":"39"},{"1":"40.6","2":"38"},{"1":"-5.7","2":"37"},{"1":"41.2","2":"36"},{"1":"41.0","2":"35"},{"1":"-6.6","2":"33"},{"1":"40.7","2":"33"},{"1":"41.4","2":"33"},{"1":"40.8","2":"32"},{"1":"-7.8","2":"30"},{"1":"-7.4","2":"30"},{"1":"41.3","2":"30"},{"1":"-7.3","2":"29"},{"1":"-7.2","2":"28"},{"1":"41.9","2":"28"},{"1":"-7.1","2":"26"},{"1":"-6.8","2":"26"},{"1":"41.6","2":"25"},{"1":"41.5","2":"24"},{"1":"42.3","2":"23"},{"1":"41.8","2":"22"},{"1":"42.1","2":"21"},{"1":"41.7","2":"20"},{"1":"42.2","2":"20"},{"1":"-7.5","2":"19"},{"1":"-7.6","2":"18"},{"1":"42.5","2":"18"},{"1":"42.8","2":"18"},{"1":"43.0","2":"18"},{"1":"-7.9","2":"17"},{"1":"42.0","2":"17"},{"1":"-8.0","2":"16"},{"1":"-7.7","2":"16"},{"1":"43.2","2":"16"},{"1":"43.4","2":"16"},{"1":"43.1","2":"15"},{"1":"-8.1","2":"12"},{"1":"42.4","2":"12"},{"1":"42.6","2":"12"},{"1":"42.7","2":"12"},{"1":"42.9","2":"12"},{"1":"43.3","2":"11"},{"1":"43.7","2":"11"},{"1":"-8.5","2":"10"},{"1":"-8.4","2":"9"},{"1":"-8.3","2":"9"},{"1":"-9.0","2":"8"},{"1":"-8.8","2":"8"},{"1":"-8.6","2":"8"},{"1":"-8.2","2":"8"},{"1":"44.1","2":"8"},{"1":"44.5","2":"7"},{"1":"-9.4","2":"6"},{"1":"-9.2","2":"6"},{"1":"-8.9","2":"5"},{"1":"43.9","2":"5"},{"1":"44.2","2":"5"},{"1":"-9.6","2":"4"},{"1":"-9.1","2":"4"},{"1":"43.5","2":"4"},{"1":"44.0","2":"4"},{"1":"44.3","2":"4"},{"1":"45.1","2":"4"},{"1":"-9.8","2":"3"},{"1":"-8.7","2":"3"},{"1":"43.6","2":"3"},{"1":"44.4","2":"3"},{"1":"44.7","2":"3"},{"1":"44.8","2":"3"},{"1":"44.9","2":"3"},{"1":"-10.1","2":"2"},{"1":"-9.7","2":"2"},{"1":"-9.5","2":"2"},{"1":"-9.3","2":"2"},{"1":"43.8","2":"2"},{"1":"44.6","2":"2"},{"1":"45.0","2":"2"},{"1":"45.7","2":"2"},{"1":"45.8","2":"2"},{"1":"47.9","2":"2"},{"1":"-11.5","2":"1"},{"1":"-11.2","2":"1"},{"1":"-10.7","2":"1"},{"1":"-10.3","2":"1"},{"1":"-9.9","2":"1"},{"1":"45.2","2":"1"},{"1":"45.3","2":"1"},{"1":"45.5","2":"1"},{"1":"45.6","2":"1"},{"1":"45.9","2":"1"},{"1":"46.0","2":"1"},{"1":"46.1","2":"1"},{"1":"46.3","2":"1"},{"1":"46.7","2":"1"},{"1":"47.7","2":"1"},{"1":"48.3","2":"1"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[571]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>This command counts the number of times each temperature appears in
+the data set. It appears that the most common numeric temperature is
+15.8 degrees C, which appears 3,005 times. At least 220 specific (xx.x)
+temperatures also are counted over 1,000 times, proving how large this
+data set really is.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImdyb3VwZWRfZGYiLCJ0YmxfZGYiLCJ0YmwiLCJkYXRhLmZyYW1lIl0sIm5yb3ciOjcsIm5jb2wiOjIsInN1bW1hcnkiOnsiQSB0aWJibGUiOlsiNyDDlyAyIl0sIkdyb3VwcyI6WyJzaXRlX25hbWUgWzddIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQTExUndVNkRRQkRkMG1KVGtpcUpGNzF4MUVPNWFFdzlMdTAySmFVTFdhZ3RKNE10S2hHWEJtajA2R2Y1Qi82Qi8rS2x1RXQzbzRGa2x0azNNMi9telpMeDZrcGJhUUNBTnVnb0NtaXJ6QVhxSXBnTWhvQWg3TklDSGREai8zZVdkTW9jRHVyTXVpSndOa2VPNVM0SVJzYUY2NFJ6eng0WkhpU3pTeEh2ZTRnRVV3UGF4SE5KSU1EZURPSEFDTndsRm9ET2c0Wmo0NUhyWUFNdWZZR2YrK0VZbzVCUld6NGlkekJ3U1doTWJjZVI5UG9JWWdzUkFoc2QraGF4ZlF1eXFTQWlMZ2ZxbVZ2REcySFhmMlorQS9EMTJSQ3NydE9vS0lSWUNXcWJxSXpNeHp4NmpSdnB2VHg3TXluREM5RkwrV0JIVlZVL1RWNlpwTmZMRk5WRlVzYjNQQ0xYVGRteGI1UjJzMjJaWkpRVksvd2wxTVp3cmJ3Qm5Pd29wOXdNMXM4NytqSzQ1UUxxOE9IckM3Lzd6MWNPTFR1Vm9GSUYxVkZNbnhJcXAxUFQ2Q0ZPeGVXWUthODFtZHM4b2FYY0ZFTUxzOHpLU09acDZ5eVZTSzBON0g4QnJpdC9FSUFDQUFBPSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["site_name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"MELBOURNE (OLYMPIC PARK)","2":"79926"},{"1":"PERTH AIRPORT","2":"79926"},{"1":"KENT TOWN","2":"79924"},{"1":"PORT LINCOLN AWS","2":"79924"},{"1":"SYDNEY (OBSERVATORY HILL)","2":"79924"},{"1":"CANBERRA AIRPORT","2":"77526"},{"1":"BRISBANE AERO","2":"51128"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[7]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>The command above allows us to sort the locations by order of most
+frequent entries. Interestingly, the top five locations all have around
+the same number of entries (between 79,924 - 79,926). It also appears
+that most of, if not all, of the locations are airports. Based on this I
+assume that the temperature at each of the airports is being recorded
+around the same time for all locations.</p>
+<p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
+<p>Now, I wanted to look at data regarding specific locations. To do
+this, I switched to the <code>rainfall</code> data frame, which has
+latitudes and longitudes for each location. I needed to install and load
+the <code>mapview</code> library first.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShtYXB2aWV3KVxuXG5gYGAifQ== -->
+<pre class="r"><code>library(mapview)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2h0bWx3aWRnZXRzJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tICAgICAgICAgXG4gIHByaW50Lmh0bWx3aWRnZXQgdG9vbHM6cnN0dWRpb1xuIn0= -->
+<pre><code>Registered S3 method overwritten by &#39;htmlwidgets&#39;:
+  method           from         
+  print.htmlwidget tools:rstudio</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWFwdmlldyhyYWluZmFsbCwgeGNvbCA9IFwibG9uZ1wiLCB5Y29sID0gXCJsYXRcIiwgY3JzID0gNDMyNiwgZ3JpZCA9IFRSVUUpXG5gYGAifQ== -->
+<pre class="r"><code>mapview(rainfall, xcol = &quot;long&quot;, ycol = &quot;lat&quot;, crs = 4326, grid = TRUE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>This command organizes each of the latitudes and longitudes and plots
+them on a map. This way, we are able to visualize where each of the
+locations are in the country.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImdyb3VwZWRfZGYiLCJ0YmxfZGYiLCJ0YmwiLCJkYXRhLmZyYW1lIl0sIm5yb3ciOjE2MywibmNvbCI6Miwic3VtbWFyeSI6eyJBIHRpYmJsZSI6WyIxNjMgw5cgMiJdLCJHcm91cHMiOlsieWVhciBbMTYzXSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUE5WFdNV2dUVVJqQThaZHJZcHVnSmFCREI0Y1VSQnhNaU9qUXdTRkRFUkdISUJVeUtPUk1vZzJtbDVoY3NZSkRCZ2NIS1JrNk9OanZLOVRCd2FGREJ3ZUhnZzRPRGgwY1JCdzZPRGc0ZEhBUWxNWjN5ZjlzUEZ4RUZDdzhmdmRlTDVkYy9uZEpMczJXVHFkS0tXUE1tSWs3amhsTDJFMlR1RHgzTGp0ajdJcWR4RXpjSkFPWDdFNkg3VWF3T0duSGVtRjFJdGpiRkZZUFlocVA0QlFleFF3ZXd4TjRFdk40Qm1md0xCWndGcy9qUlN6aUhKYndDcGF4aXZQWXdCYjZ1SVIzc1l2MzhENCt3QjZ1NEVOOGhHdjRHSi9nVTl6QVRYeUd6M0VMWCtJcmZJM2IrQWJmNG52Y3dRLzRFVC9oTG43R0wvaHRxQmlNSS8yRi9wSkcrZ3Y5aGY2U1Fmb0wvWVgra2tmNkMvMkYvbEpBK2d2OWhmNVNSUG9ML1lYK1VrYjZDLzJGL3RKQytndjloZjdTUmZvTC9ZWCswa1A2Qy8yRi9yS0c5QmY2Qy8xbEEra3Y5QmY2eXhiU1grZ3Y5SmR0cEwvUVgrZ3ZPMGgvb2IvUVgzYVIva0ovb2I4YXBML1NYK212YWFTLzBsL3ByeG1rdjlKZjZhOTVwTC9TWCttdkJhUy8wbC9wcjBXa3Y5SmY2YTlscEwvU1grbXZMYVMvMGwvcHIxMmt2OUpmNmE4OXc5OGhPOWJ0WitZQ3d4dlovZ3R6eHdaMjNvMk0zNTFIeDU4ZTd6K2J4eS9ZTDczTjRSaWZ0dU00VHYvNytjU3lIU3U0L090NXluNEhKNy91ajUvbUx5TDczN0xYNGxUa3l6eFJhYmlkanQxSWp5eW1xcTd2NXE2MzNZVmFaUGRrdTNrNzU5bjFEdGUyRTl3Si9YNy9hdlM0NFU3QmNSMFc0M2RxYmp2OEZXR3ZYTE1YZWRSNHMrWFhtNTU5bkJQOHdFaEVYbGVzSFZsSUwzckI4MVN6bGZsRjcyYjJWUEJ4a1JyOGYvL3VpdzN2d0IvYnp2QTU0MzJPbGVCWUIycmVqYnBYQzE5L3c3MVdhekNadEdjOU9KOWNxMTMzL1BCZHNxdWRuTi8wM1hDL1ZLWFpDRmNHSjJmMnZnUGNLLytiV0FrQUFBPT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["year"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"1858","2":"365"},{"1":"1859","2":"365"},{"1":"1860","2":"366"},{"1":"1861","2":"365"},{"1":"1862","2":"365"},{"1":"1863","2":"365"},{"1":"1864","2":"366"},{"1":"1865","2":"365"},{"1":"1866","2":"365"},{"1":"1867","2":"365"},{"1":"1868","2":"366"},{"1":"1869","2":"365"},{"1":"1870","2":"365"},{"1":"1871","2":"365"},{"1":"1872","2":"366"},{"1":"1873","2":"365"},{"1":"1874","2":"365"},{"1":"1875","2":"365"},{"1":"1876","2":"366"},{"1":"1877","2":"365"},{"1":"1878","2":"365"},{"1":"1879","2":"365"},{"1":"1880","2":"366"},{"1":"1881","2":"365"},{"1":"1882","2":"365"},{"1":"1883","2":"365"},{"1":"1884","2":"732"},{"1":"1885","2":"730"},{"1":"1886","2":"730"},{"1":"1887","2":"730"},{"1":"1888","2":"732"},{"1":"1889","2":"730"},{"1":"1890","2":"730"},{"1":"1891","2":"730"},{"1":"1892","2":"732"},{"1":"1893","2":"730"},{"1":"1894","2":"730"},{"1":"1895","2":"730"},{"1":"1896","2":"732"},{"1":"1897","2":"730"},{"1":"1898","2":"730"},{"1":"1899","2":"730"},{"1":"1900","2":"730"},{"1":"1901","2":"730"},{"1":"1902","2":"730"},{"1":"1903","2":"730"},{"1":"1904","2":"732"},{"1":"1905","2":"730"},{"1":"1906","2":"730"},{"1":"1907","2":"730"},{"1":"1908","2":"732"},{"1":"1909","2":"730"},{"1":"1910","2":"730"},{"1":"1911","2":"730"},{"1":"1912","2":"732"},{"1":"1913","2":"730"},{"1":"1914","2":"730"},{"1":"1915","2":"730"},{"1":"1916","2":"732"},{"1":"1917","2":"730"},{"1":"1918","2":"730"},{"1":"1919","2":"730"},{"1":"1920","2":"732"},{"1":"1921","2":"730"},{"1":"1922","2":"730"},{"1":"1923","2":"730"},{"1":"1924","2":"732"},{"1":"1925","2":"730"},{"1":"1926","2":"730"},{"1":"1927","2":"730"},{"1":"1928","2":"732"},{"1":"1929","2":"730"},{"1":"1930","2":"730"},{"1":"1931","2":"730"},{"1":"1932","2":"732"},{"1":"1933","2":"730"},{"1":"1934","2":"730"},{"1":"1935","2":"730"},{"1":"1936","2":"732"},{"1":"1937","2":"730"},{"1":"1938","2":"730"},{"1":"1939","2":"730"},{"1":"1940","2":"732"},{"1":"1941","2":"730"},{"1":"1942","2":"730"},{"1":"1943","2":"730"},{"1":"1944","2":"732"},{"1":"1945","2":"730"},{"1":"1946","2":"730"},{"1":"1947","2":"730"},{"1":"1948","2":"732"},{"1":"1949","2":"730"},{"1":"1950","2":"730"},{"1":"1951","2":"730"},{"1":"1952","2":"732"},{"1":"1953","2":"730"},{"1":"1954","2":"730"},{"1":"1955","2":"730"},{"1":"1956","2":"732"},{"1":"1957","2":"730"},{"1":"1958","2":"730"},{"1":"1959","2":"730"},{"1":"1960","2":"732"},{"1":"1961","2":"730"},{"1":"1962","2":"730"},{"1":"1963","2":"730"},{"1":"1964","2":"1098"},{"1":"1965","2":"1460"},{"1":"1966","2":"1460"},{"1":"1967","2":"1825"},{"1":"1968","2":"1830"},{"1":"1969","2":"1825"},{"1":"1970","2":"1825"},{"1":"1971","2":"1825"},{"1":"1972","2":"1830"},{"1":"1973","2":"1825"},{"1":"1974","2":"1825"},{"1":"1975","2":"1825"},{"1":"1976","2":"1830"},{"1":"1977","2":"1825"},{"1":"1978","2":"1825"},{"1":"1979","2":"1825"},{"1":"1980","2":"1830"},{"1":"1981","2":"1825"},{"1":"1982","2":"1825"},{"1":"1983","2":"1825"},{"1":"1984","2":"1830"},{"1":"1985","2":"1825"},{"1":"1986","2":"1825"},{"1":"1987","2":"1825"},{"1":"1988","2":"1830"},{"1":"1989","2":"1825"},{"1":"1990","2":"1825"},{"1":"1991","2":"1825"},{"1":"1992","2":"1830"},{"1":"1993","2":"1825"},{"1":"1994","2":"1825"},{"1":"1995","2":"1825"},{"1":"1996","2":"1830"},{"1":"1997","2":"1825"},{"1":"1998","2":"1825"},{"1":"1999","2":"2190"},{"1":"2000","2":"2196"},{"1":"2001","2":"2190"},{"1":"2002","2":"2190"},{"1":"2003","2":"2190"},{"1":"2004","2":"2196"},{"1":"2005","2":"2190"},{"1":"2006","2":"2190"},{"1":"2007","2":"2190"},{"1":"2008","2":"2562"},{"1":"2009","2":"2555"},{"1":"2010","2":"2555"},{"1":"2011","2":"2555"},{"1":"2012","2":"2562"},{"1":"2013","2":"2555"},{"1":"2014","2":"2555"},{"1":"2015","2":"2499"},{"1":"2016","2":"2196"},{"1":"2017","2":"2190"},{"1":"2018","2":"2190"},{"1":"2019","2":"2161"},{"1":"2020","2":"24"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[163]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>This shows that data has been collected for the last 163 years, with
+the most recent year appearing to be 2017. What is interesting about
+this data is that the earlier years have 365 observations exactly, which
+may indicate that only one location was being tracked every day. For the
+most current years, there are over 2,000 entries per year which could
+correlate to the each of the different locations being measured per
+year.</p>
+</div>
+<div id="conclusions" class="section level2">
+<h2>Conclusions</h2>
+<p>This is a complex data set with many different variables to analyze
+and consider. Despite the data being called “Australian Fires”, the data
+I analyzed was more focused on measuring temperature than the actual
+fires, which was too large of a data set to download. If I had more time
+and experience, this would be an interesting analysis to continue.</p>
 <!-- rnb-text-end -->
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRmluYWwgQmlvc3RhdGlzdGljcyBBbmFseXNpcyIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKIyBCaW9zdGF0aXN0aWNzIEFuYWx5c2lzIDI6IEF1c3RyYWxpYW4gRmlyZXMKCiMjIFN0ZXAgMTogTG9hZGluZyB0aGUgdGlkeXZlcnNlCgpgYGB7cn0KI0xvYWQgdGhlIHRpZHl2ZXJzZQpsaWJyYXJ5KHRpZHl2ZXJzZSkKbGlicmFyeShrYWJsZUV4dHJhKQojaW5zdGFsbC5wYWNrYWdlcygidGlkeW1vZGVscyIpCmxpYnJhcnkodGlkeW1vZGVscykKI2luc3RhbGwucGFja2FnZXMoInNraW1yIikKbGlicmFyeShza2ltcikKYGBgCgojIyBTdGVwIDI6IExvYWRpbmcgdGhlIHBhY2thZ2VzCgpUaGUgZGF0YSBzZXQgSSBjaG9zZSBmb3IgdGhpcyBhbmFseXNpcyBpcyBvbiBBdXN0cmFsaWEsIHNwZWNpZmljYWxseSBhYm91dCBpdCdzIGNsaW1hdGUgYW5kIHJlY2VudCBmaXJlcy4gT25lIG9mIHRoZSBnb2FscyBvZiBjb21waWxpbmcgdGhpcyBkYXRhIGlzIHRvIHNwcmVhZCBhd2FyZW5lc3Mgb2YgdGhlc2UgZmlyZXMsIGFuZCB0aGVyZSBpcyBhbgoKYGBge3J9CiMgR2V0IHRoZSBEYXRhCgpyYWluZmFsbCA8LSByZWFkcjo6cmVhZF9jc3YoJ2h0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9yZm9yZGF0YXNjaWVuY2UvdGlkeXR1ZXNkYXkvbWFzdGVyL2RhdGEvMjAyMC8yMDIwLTAxLTA3L3JhaW5mYWxsLmNzdicpCnRlbXBlcmF0dXJlIDwtIHJlYWRyOjpyZWFkX2NzdignaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3Jmb3JkYXRhc2NpZW5jZS90aWR5dHVlc2RheS9tYXN0ZXIvZGF0YS8yMDIwLzIwMjAtMDEtMDcvdGVtcGVyYXR1cmUuY3N2JykKCmxpYnJhcnkoc2tpbXIpCnJhaW5mYWxsJT4lCiAgc2tpbSgpCgpsaWJyYXJ5KHNraW1yKQp0ZW1wZXJhdHVyZSU+JQogIHNraW0oKQoKcmFpbmZhbGwgJT4lCiAgaGVhZCgpICU+JQogIGthYmxlKCkgJT4lCiAga2FibGVfc3R5bGluZyhjKCJob3ZlciIsICJzdHJpcGVkIikpCmBgYAoKQWJvdmUgSSBoYXZlIGxvYWRlZCB0aGUgZGF0YSBmcm9tIHRoZSB0aWR5dHVlc2RheSBwYWdlLCB3aGljaCBoYXMgdHdvIGRhdGEgc2V0cyAodGVtcGVyYXR1cmUgYW5kIHJhaW5mYWxsKS4K</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRmluYWwgQmlvc3RhdGlzdGljcyBBbmFseXNpcyIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKIyBCaW9zdGF0aXN0aWNzIEFuYWx5c2lzIDI6IEF1c3RyYWxpYW4gRmlyZXMKCiMjIEFic3RyYWN0CgpUaGlzIG5vdGVib29rIGV4YW1pbmVzIGRhdGEgb24gdGVtcGVyYXR1cmUgYW5kIHJhaW5mYWxsIGluIEF1c3RyYWxpYSwgYXMgd2VsbCBhcyBkYXRhIG9uIGEgbnVtYmVyIG9mIGZpcmVzIGFyb3VuZCB0aGUgY291bnRyeS4gVGhlcmUgYXJlIGEgbnVtYmVyIG9mIHF1ZXN0aW9ucyB3aGljaCBjYW4gYmUgZ2VuZXJhdGVkIGZyb20gdGhpcyBkYXRhLCBpbmNsdWRpbmcgaG93IHJhaW5mYWxsIGNvbXBhcmVzIHRvIHRlbXBlcmF0dXJlLCB3aGF0IHJlZ2lvbiBvZiB0aGUgY291bnRyeSBoYXMgdGhlIG1vc3QgZmlyZXMsIGFuZCBob3cgdGVtcGVyYXR1cmUgY29ycmVsYXRlcyB0byBjaGFuY2Ugb2YgZmlyZS4KCiMjIEludHJvZHVjdGlvbgoKVGhlIGNsaW1hdGUgaGFzIGJlZW4gcmF0aGVyIHVuc3RhYmxlIGFyb3VuZCB0aGUgd29ybGQgaW4gcmVjZW50IHllYXJzLCBhbmQgc2VlbXMgdG8gYmUgY2hhbmdpbmcgYXQgYSByYXBpZCByYXRlLiBDbGltYXRlIGNoYW5nZSBpcyBvZnRlbiBhc3NvY2lhdGVkIHdpdGggb3IgYXR0cmlidXRlZCB0byBhbHRlcmVkIHdlYXRoZXIgcGF0dGVybnMgKGluY2x1ZGluZyBhYm5vcm1hbCBzdG9ybXMgYW5kIHRlbXBlcmF0dXJlcyksIGFuZCByaXNpbmcgc2VhIGxldmVscy4gTGFjayBvZiByYWluZmFsbCBhbmQgaGlnaGVyIHRlbXBlcmF0dXJlcyBhcmUgb2Z0ZW4gYSBwcmltZSBlbnZpcm9ubWVudCBmb3IgYW4gdW5jb250cm9sbGFibGUgZmlyZSwgd2hpY2ggY2FuIGNhdXNlIGlycmV2ZXJzaWJsZSBkYW1hZ2UgdG8gdGhlIGZsb3JhIGFuZCBmYXVuYSBpbiBhIHJlZ2lvbi4KCiMjIyBRdWVzdGlvbnMgdG8gQ29uc2lkZXIKCi0gICBIb3cgZG9lcyByYWluZmFsbCBjb21wYXJlIHRvIHRlbXBlcmF0dXJlPwoKLSAgIERvZXMgaGlnaGVyIHRlbXBlcmF0dXJlIGNvcnJlbGF0ZSB3aXRoIGhpZ2hlciBjaGFuY2Ugb2YgZmlyZXM/CgotICAgQXJlIHRoZSBmaXJlcyBjb25jZW50cmF0ZWQgdG8gb25lIHJlZ2lvbiBvZiB0aGUgY291bnRyeT8KCi0gICBXaGljaCByZWdpb24vY2l0eSBoYXMgdGhlIGhpZ2hlc3QgdGVtcGVyYXR1cmVzPwoKLSAgIFdoZXJlIGlzIHRoZSBtb3N0IHJhaW4gZmFsbGluZyBpbiB0aGUgcmVnaW9uLCBvbiBhdmVyYWdlPwoKIyMjIExvYWRpbmcgdGhlIHBhY2thZ2VzCgpgYGB7cn0KI0xvYWQgdGhlIHRpZHl2ZXJzZQpsaWJyYXJ5KHRpZHl2ZXJzZSkKbGlicmFyeShrYWJsZUV4dHJhKQojaW5zdGFsbC5wYWNrYWdlcygidGlkeW1vZGVscyIpCmxpYnJhcnkodGlkeW1vZGVscykKI2luc3RhbGwucGFja2FnZXMoInNraW1yIikKbGlicmFyeShza2ltcikKCmluc3RhbGwucGFja2FnZXMoInNmIikKYGBgCgojIyMgTG9hZGluZyB0aGUgZGF0YQoKT25lIG9mIHRoZSBwcmltYXJ5IGdvYWxzIG9mIGNvbXBpbGluZyB0aGlzIGRhdGEgc2V0IGlzIHRvIHNwcmVhZCBhd2FyZW5lc3Mgb2YgdGhlc2UgZmlyZXMuIFRoZXJlIGFyZSBtYW55IHNvdXJjZXMgd2hpY2ggcmVwb3J0IGNsaW1hdGUgZGF0YSBvbiB0aGUgcmVnaW9uLCB3aGljaCBpbmNsdWRlIHRoZSB0ZW1wZXJhdHVyZSBhbmQgcmFpbmZhbGwgc3RhdGlzdGljcy4KCmBgYHtyfQojIEdldCB0aGUgRGF0YQoKIyBHZXQgdGhlIERhdGEKCnJhaW5mYWxsIDwtIHJlYWRyOjpyZWFkX2NzdignaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3Jmb3JkYXRhc2NpZW5jZS90aWR5dHVlc2RheS9tYXN0ZXIvZGF0YS8yMDIwLzIwMjAtMDEtMDcvcmFpbmZhbGwuY3N2JykKdGVtcGVyYXR1cmUgPC0gcmVhZHI6OnJlYWRfY3N2KCdodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vcmZvcmRhdGFzY2llbmNlL3RpZHl0dWVzZGF5L21hc3Rlci9kYXRhLzIwMjAvMjAyMC0wMS0wNy90ZW1wZXJhdHVyZS5jc3YnKQoKIyBJRiBZT1UgVVNFIFRISVMgREFUQSBQTEVBU0UgQkUgQ0FVVElPVVMgV0lUSCBJTlRFUlBSRVRBVElPTgpuYXNhX2ZpcmUgPC0gcmVhZHI6OnJlYWRfY3N2KCdodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vcmZvcmRhdGFzY2llbmNlL3RpZHl0dWVzZGF5L21hc3Rlci9kYXRhLzIwMjAvMjAyMC0wMS0wNy9NT0RJU19DNl9BdXN0cmFsaWFfYW5kX05ld19aZWFsYW5kXzdkLmNzdicpCgojIEZvciBKU09OIEZpbGUgb2YgZmlyZXMKdXJsIDwtICJodHRwOi8vd3d3LnJmcy5uc3cuZ292LmF1L2ZlZWRzL21ham9ySW5jaWRlbnRzLmpzb24iCgphdXNfZmlyZXMgPC0gc2Y6OnN0X3JlYWQodXJsKQoKCmBgYAoKQWJvdmUgSSBoYXZlIGxvYWRlZCB0aGUgZGF0YSBmcm9tIHRoZSB0aWR5dHVlc2RheSBwYWdlLCB3aGljaCBoYXMgdHdvIGRhdGEgc2V0cyAodGVtcGVyYXR1cmUgYW5kIHJhaW5mYWxsKS4KCiMjIEV4cGxvcmF0b3J5IEFuYWx5c2lzCgpUbyBiZWdpbiBhbmFseXppbmcgdGhlIGRhdGEsIHdlIHdhbnQgdG8gc2tpbSBpdC4gVGhlIHNraW0gZnVuY3Rpb24gYWxsb3dzIGZvciBncm91cGluZyBvZiBzaW1pbGFyIGRhdGEgZWxlbWVudHMgZm9yIG1vcmUgb3JnYW5pemVkIGFuYWx5c2lzLiBGaXJzdCwgSSB3YW50IHRvIGxvb2sgYXQgc3BlY2lmaWNzIGZyb20gdGhlIGB0ZW1wZXJhdHVyZWAgZGF0YSBmcmFtZS4KCmBgYHtyfQoKbGlicmFyeShza2ltcikKcmFpbmZhbGwlPiUKICBza2ltKCkKCmxpYnJhcnkoc2tpbXIpCnRlbXBlcmF0dXJlJT4lCiAgc2tpbSgpCgp0ZW1wZXJhdHVyZSAlPiUKICBoZWFkKCkgJT4lCiAga2FibGUoKSAlPiUKICBrYWJsZV9zdHlsaW5nKGMoImhvdmVyIiwgInN0cmlwZWQiKSkKYGBgCgpPbmUgb2YgdGhlIGZpcnN0IHRoaW5ncyBJIHdhcyBpbnRlcmVzdGVkIGluIHdhcyBoaWdoZXN0IHRlbXBlcmF0dXJlLiBPbmUgdGhpbmcgdGhhdCBJIG5vdGVkIGFib3V0IHRoZSBkYXRhIHNldCBgdGVtcGVyYXR1cmVgIGlzIHRoYXQgaXQgaXMgZXh0cmVtZWx5IGxhcmdlLiBXaGVuIHZpZXdpbmcgYWxsIG9mIHRoZSBkYXRhIGluIHRoYXQgc2V0LCB0aGVyZSBhcHBlYXJzIHRvIGJlIDUyOCwyNzggZW50cmllcywgc29ydGVkIGludG8gZml2ZSBjb2x1bW5zLgoKYGBge3J9CnRlbXBlcmF0dXJlICU+JQogIGNvdW50KHRlbXBlcmF0dXJlKSAlPiUKICBhcnJhbmdlKC1uKQpgYGAKClRoaXMgY29tbWFuZCBjb3VudHMgdGhlIG51bWJlciBvZiB0aW1lcyBlYWNoIHRlbXBlcmF0dXJlIGFwcGVhcnMgaW4gdGhlIGRhdGEgc2V0LiBJdCBhcHBlYXJzIHRoYXQgdGhlIG1vc3QgY29tbW9uIG51bWVyaWMgdGVtcGVyYXR1cmUgaXMgMTUuOCBkZWdyZWVzIEMsIHdoaWNoIGFwcGVhcnMgMywwMDUgdGltZXMuIEF0IGxlYXN0IDIyMCBzcGVjaWZpYyAoeHgueCkgdGVtcGVyYXR1cmVzIGFsc28gYXJlIGNvdW50ZWQgb3ZlciAxLDAwMCB0aW1lcywgcHJvdmluZyBob3cgbGFyZ2UgdGhpcyBkYXRhIHNldCByZWFsbHkgaXMuCgpgYGB7cn0KdGVtcGVyYXR1cmUgJT4lCiAgZ3JvdXBfYnkoc2l0ZV9uYW1lKSAlPiUKICBjb3VudChzaXRlX25hbWUpICU+JQogIGFycmFuZ2UoLW4pCmBgYAoKVGhlIGNvbW1hbmQgYWJvdmUgYWxsb3dzIHVzIHRvIHNvcnQgdGhlIGxvY2F0aW9ucyBieSBvcmRlciBvZiBtb3N0IGZyZXF1ZW50IGVudHJpZXMuIEludGVyZXN0aW5nbHksIHRoZSB0b3AgZml2ZSBsb2NhdGlvbnMgYWxsIGhhdmUgYXJvdW5kIHRoZSBzYW1lIG51bWJlciBvZiBlbnRyaWVzIChiZXR3ZWVuIDc5LDkyNCAtIDc5LDkyNikuIEl0IGFsc28gYXBwZWFycyB0aGF0IG1vc3Qgb2YsIGlmIG5vdCBhbGwsIG9mIHRoZSBsb2NhdGlvbnMgYXJlIGFpcnBvcnRzLiBCYXNlZCBvbiB0aGlzIEkgYXNzdW1lIHRoYXQgdGhlIHRlbXBlcmF0dXJlIGF0IGVhY2ggb2YgdGhlIGFpcnBvcnRzIGlzIGJlaW5nIHJlY29yZGVkIGFyb3VuZCB0aGUgc2FtZSB0aW1lIGZvciBhbGwgbG9jYXRpb25zLgoKXH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+XH5cflx+CgpOb3csIEkgd2FudGVkIHRvIGxvb2sgYXQgZGF0YSByZWdhcmRpbmcgc3BlY2lmaWMgbG9jYXRpb25zLiBUbyBkbyB0aGlzLCBJIHN3aXRjaGVkIHRvIHRoZSBgcmFpbmZhbGxgIGRhdGEgZnJhbWUsIHdoaWNoIGhhcyBsYXRpdHVkZXMgYW5kIGxvbmdpdHVkZXMgZm9yIGVhY2ggbG9jYXRpb24uIEkgbmVlZGVkIHRvIGluc3RhbGwgYW5kIGxvYWQgdGhlIGBtYXB2aWV3YCBsaWJyYXJ5IGZpcnN0LgoKYGBge3J9Cmluc3RhbGwucGFja2FnZXMoIm1hcHZpZXciKQoKbGlicmFyeShtYXB2aWV3KQpgYGAKCmBgYHtyfQptYXB2aWV3KHJhaW5mYWxsLCB4Y29sID0gImxvbmciLCB5Y29sID0gImxhdCIsIGNycyA9IDQzMjYsIGdyaWQgPSBUUlVFKQpgYGAKClRoaXMgY29tbWFuZCBvcmdhbml6ZXMgZWFjaCBvZiB0aGUgbGF0aXR1ZGVzIGFuZCBsb25naXR1ZGVzIGFuZCBwbG90cyB0aGVtIG9uIGEgbWFwLiBUaGlzIHdheSwgd2UgYXJlIGFibGUgdG8gdmlzdWFsaXplIHdoZXJlIGVhY2ggb2YgdGhlIGxvY2F0aW9ucyBhcmUgaW4gdGhlIGNvdW50cnkuCgpgYGB7cn0KcmFpbmZhbGwgJT4lCiAgZ3JvdXBfYnkoeWVhcikgJT4lCiAgY291bnQoeWVhcikKICAKYGBgCgpUaGlzIHNob3dzIHRoYXQgZGF0YSBoYXMgYmVlbiBjb2xsZWN0ZWQgZm9yIHRoZSBsYXN0IDE2MyB5ZWFycywgd2l0aCB0aGUgbW9zdCByZWNlbnQgeWVhciBhcHBlYXJpbmcgdG8gYmUgMjAxNy4gV2hhdCBpcyBpbnRlcmVzdGluZyBhYm91dCB0aGlzIGRhdGEgaXMgdGhhdCB0aGUgZWFybGllciB5ZWFycyBoYXZlIDM2NSBvYnNlcnZhdGlvbnMgZXhhY3RseSwgd2hpY2ggbWF5IGluZGljYXRlIHRoYXQgb25seSBvbmUgbG9jYXRpb24gd2FzIGJlaW5nIHRyYWNrZWQgZXZlcnkgZGF5LiBGb3IgdGhlIG1vc3QgY3VycmVudCB5ZWFycywgdGhlcmUgYXJlIG92ZXIgMiwwMDAgZW50cmllcyBwZXIgeWVhciB3aGljaCBjb3VsZCBjb3JyZWxhdGUgdG8gdGhlIGVhY2ggb2YgdGhlIGRpZmZlcmVudCBsb2NhdGlvbnMgYmVpbmcgbWVhc3VyZWQgcGVyIHllYXIuCgojIyBDb25jbHVzaW9ucwoKVGhpcyBpcyBhIGNvbXBsZXggZGF0YSBzZXQgd2l0aCBtYW55IGRpZmZlcmVudCB2YXJpYWJsZXMgdG8gYW5hbHl6ZSBhbmQgY29uc2lkZXIuIERlc3BpdGUgdGhlIGRhdGEgYmVpbmcgY2FsbGVkICJBdXN0cmFsaWFuIEZpcmVzIiwgdGhlIGRhdGEgSSBhbmFseXplZCB3YXMgbW9yZSBmb2N1c2VkIG9uIG1lYXN1cmluZyB0ZW1wZXJhdHVyZSB0aGFuIHRoZSBhY3R1YWwgZmlyZXMsIHdoaWNoIHdhcyB0b28gbGFyZ2Ugb2YgYSBkYXRhIHNldCB0byBkb3dubG9hZC4gSWYgSSBoYWQgbW9yZSB0aW1lIGFuZCBleHBlcmllbmNlLCB0aGlzIHdvdWxkIGJlIGFuIGludGVyZXN0aW5nIGFuYWx5c2lzIHRvIGNvbnRpbnVlLgo=</div>
 
 
 
